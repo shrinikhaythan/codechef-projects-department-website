@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recruitment - CodeChef Projects Department</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .recruitment-wrapper {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--spacing-lg);
+    }
+
+    .recruitment-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--spacing-2xl);
+      max-width: 1000px;
+      width: 100%;
+    }
+
+    .recruitment-info {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .recruitment-info h1 {
+      font-size: var(--font-size-2xl);
+      margin-bottom: var(--spacing-md);
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .recruitment-info p {
+      color: var(--text-secondary);
+      margin-bottom: var(--spacing-lg);
+      line-height: 1.8;
+    }
+
+    .requirements-list {
+      list-style: none;
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .requirements-list li {
+      padding: var(--spacing-md) 0;
+      padding-left: var(--spacing-lg);
+      position: relative;
+      color: var(--text-secondary);
+    }
+
+    .requirements-list li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      color: var(--accent-success);
+      font-weight: 700;
+    }
+
+    .recruit-form {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-lg);
+      background-color: var(--bg-secondary);
+      padding: var(--spacing-xl);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-color);
+    }
+
+    .form-group label {
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .form-group input[type="submit"] {
+      background-color: var(--accent-primary);
+      color: white;
+      cursor: pointer;
+      border: none;
+      font-weight: 600;
+      padding: var(--spacing-md);
+    }
+
+    .form-group input[type="submit"]:hover {
+      background-color: var(--accent-primary-hover);
+    }
+
+    .note-box {
+      grid-column: 1 / -1;
+      background-color: rgba(16, 185, 129, 0.1);
+      border-left: 4px solid var(--accent-success);
+      padding: var(--spacing-lg);
+      border-radius: var(--radius-md);
+      color: var(--text-secondary);
+    }
+
+    .home-link {
+      display: inline-block;
+      margin-bottom: var(--spacing-lg);
+      color: var(--accent-primary);
+      text-decoration: none;
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    .home-link:hover {
+      color: var(--accent-primary-hover);
+    }
+
+    @media (max-width: 768px) {
+      .recruitment-container {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-lg);
+      }
+
+      .recruitment-info h1 {
+        font-size: var(--font-size-xl);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+    <nav class="navbar">
+      <div class="navbar-container">
+        <a href="index.html" class="navbar-logo">
+          <span class="logo-text">Projects</span>
+        </a>
+        <div class="nav-controls">
+          <button class="theme-toggle" id="themeToggle" title="Toggle Dark/Light Mode">
+            <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <circle cx="12" cy="12" r="5"></circle>
+              <line x1="12" y1="1" x2="12" y2="3"></line>
+              <line x1="12" y1="21" x2="12" y2="23"></line>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+              <line x1="1" y1="12" x2="3" y2="12"></line>
+              <line x1="21" y1="12" x2="23" y2="12"></line>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+            <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+          </button>
+          <a href="index.html" class="btn btn-primary">← Back to Home</a>
+        </div>
+      </div>
+    </nav>
+
+    <main class="recruitment-wrapper">
+      <div class="recruitment-container">
+        <div class="recruitment-info">
+          <a href="index.html" class="home-link">← Back to Home</a>
+          <h1>Join Our Team</h1>
+          <p>
+            We're looking for passionate developers, researchers, designers, and innovators 
+            who want to make a real impact through code and collaboration.
+          </p>
+          
+          <h3>What We're Looking For:</h3>
+          <ul class="requirements-list">
+            <li>Strong problem-solving skills</li>
+            <li>Collaborative and team-oriented mindset</li>
+            <li>Passion for continuous learning</li>
+            <li>Commitment to code quality</li>
+            <li>Experience with modern technologies</li>
+          </ul>
+
+          <p style="font-size: var(--font-size-sm); color: var(--text-tertiary);">
+            Complete the form to submit your application. We review all applications carefully 
+            and will contact selected candidates for interviews.
+          </p>
+        </div>
+
+        <form class="recruit-form" id="recruitForm">
+          <div class="form-group">
+            <label for="fullName">Full Name *</label>
+            <input type="text" id="fullName" name="fullName" placeholder="John Doe" required>
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email *</label>
+            <input type="email" id="email" name="email" placeholder="john@example.com" required>
+          </div>
+
+          <div class="form-group">
+            <label for="phone">Phone</label>
+            <input type="tel" id="phone" name="phone" placeholder="+91 98765 43210">
+          </div>
+
+          <div class="form-group">
+            <label for="role">Select Role *</label>
+            <select id="role" name="role" required>
+              <option value="">-- Choose a role --</option>
+              <option value="frontend">Frontend Developer</option>
+              <option value="backend">Backend Developer</option>
+              <option value="gamedev">Game Developer</option>
+              <option value="research">Researcher</option>
+              <option value="designer">Designer</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="skills">Key Skills</label>
+            <input type="text" id="skills" name="skills" placeholder="e.g., React, Node.js, Python">
+          </div>
+
+          <div class="form-group">
+            <label for="why">Why should we select you? *</label>
+            <textarea id="why" name="why" placeholder="Tell us about your experience and passion..." required></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="portfolio">Portfolio / GitHub</label>
+            <input type="url" id="portfolio" name="portfolio" placeholder="https://github.com/yourprofile">
+          </div>
+
+          <div class="form-group">
+            <input type="submit" value="Submit Application" class="btn btn-primary">
+          </div>
+        </form>
+
+        <div class="note-box">
+          <strong>ℹ️ Note:</strong> All applications will be carefully reviewed. 
+          Selected candidates will be contacted within 5-7 business days for interviews.
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    class ThemeManager {
+      constructor() {
+        this.themeToggle = document.getElementById('themeToggle');
+        this.init();
+      }
+
+      init() {
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        this.setTheme(savedTheme);
+        this.themeToggle.addEventListener('click', () => this
