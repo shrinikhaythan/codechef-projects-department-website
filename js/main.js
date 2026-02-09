@@ -37,11 +37,7 @@ class DepartmentPortal {
   constructor() {
     this.currentTenure = '2025-26';
     this.currentGroup = 'leads';
-    this.recruitBtn = document.getElementById('recruitBtn');
-    this.heroRecruitBtn = document.getElementById('heroRecruitBtn');
     this.tenureBtns = document.querySelectorAll('.tenure-btn');
-    this.prevBtn = document.getElementById('prevBtn');
-    this.nextBtn = document.getElementById('nextBtn');
     this.navLinks = document.querySelectorAll('.nav-link');
     this.mobileToggle = document.getElementById('mobileToggle');
     this.navMenu = document.getElementById('navMenu');
@@ -59,26 +55,10 @@ class DepartmentPortal {
   }
 
   setupEventListeners() {
-    // Recruitment buttons
-    if (this.recruitBtn) {
-      this.recruitBtn.addEventListener('click', () => this.openRecruitement());
-    }
-    if (this.heroRecruitBtn) {
-      this.heroRecruitBtn.addEventListener('click', () => this.openRecruitement());
-    }
-
     // Tenure buttons
     this.tenureBtns.forEach((btn) => {
       btn.addEventListener('click', (e) => this.handleTenureChange(e));
     });
-
-    // Carousel buttons
-    if (this.prevBtn) {
-      this.prevBtn.addEventListener('click', () => this.previousSlide());
-    }
-    if (this.nextBtn) {
-      this.nextBtn.addEventListener('click', () => this.nextSlide());
-    }
 
     // Navigation links
     this.navLinks.forEach((link) => {
@@ -116,10 +96,6 @@ class DepartmentPortal {
     });
   }
 
-  openRecruitement() {
-    window.open('recruitment.html', '_blank', 'width=1200,height=800');
-  }
-
   handleNavClick(e) {
     e.preventDefault();
     this.navLinks.forEach((l) => l.classList.remove('active'));
@@ -150,12 +126,20 @@ class DepartmentPortal {
 
   renderMemberDisplay(group) {
     const container = document.getElementById('memberDisplay');
-    const members = appData.members[group] || [];
+    
+    // Get members from localStorage first
+    const storedMembers = JSON.parse(localStorage.getItem('appMembers')) || {};
+    let members = [];
 
-    container.innerHTML = members
-      .filter((m) => m.tenure === this.currentTenure)
-      .map((member) => this.createMemberCard(member))
-      .join('');
+    // Get from stored data
+    if (storedMembers[this.currentTenure] && storedMembers[this.currentTenure][group]) {
+      members = storedMembers[this.currentTenure][group];
+    } else if (appData.members[group]) {
+      // Fallback to default data
+      members = appData.members[group].filter((m) => m.tenure === this.currentTenure);
+    }
+
+    container.innerHTML = members.map((member) => this.createMemberCard(member)).join('');
 
     // Reapply animations
     const cards = container.querySelectorAll('.member-card');
@@ -168,12 +152,12 @@ class DepartmentPortal {
   createMemberCard(person) {
     return `
       <div class="card member-card">
-        <img src="${person.photo}" alt="${person.name}" class="pfp" loading="lazy">
+        <img src="${person.photo}" alt="${person.name}" class="pfp" loading="lazy" onerror="this.src='https://via.placeholder.com/140/FF6B35/ffffff?text=${person.name.charAt(0)}'">
         <h3>${person.name}</h3>
-        <p>${person.role}</p>
+        <p>${person.role || 'Member'}</p>
         <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
-          <a href="${person.linkedin}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" style="flex: 1; padding: 0.5rem;">LinkedIn</a>
-          <a href="${person.github}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" style="flex: 1; padding: 0.5rem;">GitHub</a>
+          <a href="${person.linkedin}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" style="flex: 1; padding: 0.5rem; font-size: 0.75rem;">LinkedIn</a>
+          <a href="${person.github}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" style="flex: 1; padding: 0.5rem; font-size: 0.75rem;">GitHub</a>
         </div>
       </div>
     `;
@@ -188,7 +172,10 @@ class DepartmentPortal {
 
   renderProjects(filter) {
     const container = document.getElementById('projectDisplay');
-    let projects = appData.projects;
+    
+    // Get projects from localStorage first
+    const storedProjects = JSON.parse(localStorage.getItem('appProjects')) || [];
+    let projects = storedProjects.length > 0 ? storedProjects : appData.projects;
 
     if (filter !== 'all') {
       projects = projects.filter((p) => p.status === filter);
@@ -207,12 +194,20 @@ class DepartmentPortal {
     return `
       <div class="card project-card">
         <h3>${project.title}</h3>
-        <span class="project-status status-${project.status}">
+        <span class="project-status status-${project.status}" style="
+          display: inline-block;
+          padding: 0.25rem 0.75rem;
+          border-radius: 9999px;
+          font-size: 0.75rem;
+          font-weight: 600;
+          margin-bottom: 1rem;
+          ${project.status === 'ongoing' ? 'background: rgba(16, 185, 129, 0.15); color: #10b981;' : 'background: rgba(99, 102, 241, 0.15); color: #6366f1;'}
+        ">
           ${project.status.charAt(0).toUpperCase() + project.status.slice(1)}
         </span>
         <p>${project.description}</p>
-        <div class="project-tech">
-          ${project.technologies.map((tech) => `<span class="tech-tag">${tech}</span>`).join('')}
+        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem;">
+          ${project.technologies.map((tech) => `<span style="display: inline-block; padding: 0.25rem 0.75rem; background: var(--bg-tertiary); color: var(--text-secondary); border-radius: 9999px; font-size: 0.75rem; border: 1px solid var(--border-color);">${tech}</span>`).join('')}
         </div>
         <p style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 1rem;">
           <strong>Contributors:</strong> ${project.contributors.join(', ')}
@@ -227,7 +222,9 @@ class DepartmentPortal {
 
   renderResearch() {
     const container = document.getElementById('researchDisplay');
-    container.innerHTML = appData.research.map((paper) => this.createResearchCard(paper)).join('');
+    const research = appData.research || [];
+    
+    container.innerHTML = research.map((paper) => this.createResearchCard(paper)).join('');
 
     const cards = container.querySelectorAll('.research-card');
     cards.forEach((card, index) => {
@@ -297,7 +294,7 @@ class DepartmentPortal {
     if (type === 'members') {
       html = data.map((member) => `
         <div class="card member-card">
-          <img src="${member.photo}" alt="${member.name}" class="pfp" loading="lazy">
+          <img src="${member.photo}" alt="${member.name}" class="pfp" loading="lazy" onerror="this.src='https://via.placeholder.com/140/FF6B35/ffffff?text=${member.name.charAt(0)}'">
           <h3>${member.name}</h3>
         </div>
       `).join('');
@@ -305,13 +302,13 @@ class DepartmentPortal {
       html = data.map((proj) => `
         <div class="card">
           <h3>${proj.title}</h3>
-          <a href="${proj.link}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">View Project</a>
+          <a href="${proj.link}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" style="margin-top: 1rem; display: block; text-align: center;">View Project</a>
         </div>
       `).join('');
     } else if (type === 'tools') {
       html = data.map((tool) => `
         <div class="card" style="display: flex; align-items: center; justify-content: center; padding: 2rem; min-height: 150px;">
-          <strong>${tool}</strong>
+          <strong style="text-align: center;">${tool}</strong>
         </div>
       `).join('');
     } else if (type === 'events') {
@@ -346,23 +343,23 @@ class DepartmentPortal {
 
     if (type === 'leaderboard') {
       html = `
-        <div class="leaderboard-table" style="overflow-x: auto;">
+        <div style="overflow-x: auto;">
           <table style="width: 100%; border-collapse: collapse;">
             <thead>
               <tr style="border-bottom: 2px solid var(--border-color);">
-                <th style="padding: 1rem; text-align: left;">Rank</th>
-                <th style="padding: 1rem; text-align: left;">Name</th>
-                <th style="padding: 1rem; text-align: left;">Points</th>
-                <th style="padding: 1rem; text-align: left;">Contributions</th>
+                <th style="padding: 1rem; text-align: left; font-weight: 600; color: var(--text-primary);">Rank</th>
+                <th style="padding: 1rem; text-align: left; font-weight: 600; color: var(--text-primary);">Name</th>
+                <th style="padding: 1rem; text-align: left; font-weight: 600; color: var(--text-primary);">Points</th>
+                <th style="padding: 1rem; text-align: left; font-weight: 600; color: var(--text-primary);">Contributions</th>
               </tr>
             </thead>
             <tbody>
               ${data.map((entry) => `
                 <tr style="border-bottom: 1px solid var(--border-color);">
-                  <td style="padding: 1rem;">#${entry.rank}</td>
-                  <td style="padding: 1rem;">${entry.name}</td>
+                  <td style="padding: 1rem; color: var(--text-secondary);">#${entry.rank}</td>
+                  <td style="padding: 1rem; color: var(--text-primary);">${entry.name}</td>
                   <td style="padding: 1rem;"><strong style="color: var(--accent-success);">${entry.points}</strong></td>
-                  <td style="padding: 1rem;">${entry.contributions}</td>
+                  <td style="padding: 1rem; color: var(--text-secondary);">${entry.contributions}</td>
                 </tr>
               `).join('')}
             </tbody>
@@ -389,20 +386,6 @@ class DepartmentPortal {
     }
 
     container.innerHTML = html;
-  }
-
-  previousSlide() {
-    const carousel = document.getElementById('peopleCarousel');
-    if (carousel) {
-      carousel.scrollBy({ left: -300, behavior: 'smooth' });
-    }
-  }
-
-  nextSlide() {
-    const carousel = document.getElementById('peopleCarousel');
-    if (carousel) {
-      carousel.scrollBy({ left: 300, behavior: 'smooth' });
-    }
   }
 }
 

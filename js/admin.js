@@ -47,16 +47,22 @@ class AdminPanel {
   switchTab(e) {
     const tabName = e.target.dataset.tab;
 
+    // Remove active class from all tabs
     this.adminTabs.forEach((tab) => tab.classList.remove('active'));
     e.target.classList.add('active');
 
+    // Remove active class from all contents
     this.adminTabContents.forEach((content) => {
       content.classList.remove('active');
-      if (content.dataset.tab === tabName) {
-        content.classList.add('active');
-        content.style.animation = 'fadeInUp 0.3s ease-out';
-      }
     });
+
+    // Add active class to selected content
+    const activeContent = document.querySelector(
+      `.admin-tab-content[data-tab="${tabName}"]`
+    );
+    if (activeContent) {
+      activeContent.classList.add('active');
+    }
   }
 
   handleAddMember(e) {
@@ -70,13 +76,13 @@ class AdminPanel {
       role: formData.get('role'),
       group: formData.get('group'),
       tenure: formData.get('tenure'),
-      linkedin: formData.get('linkedin'),
-      github: formData.get('github'),
-      photo: formData.get('photo') || 'https://via.placeholder.com/140'
+      linkedin: formData.get('linkedin') || '#',
+      github: formData.get('github') || '#',
+      photo: formData.get('photo') || 'https://via.placeholder.com/140/FF6B35/ffffff?text=' + formData.get('name').charAt(0)
     };
 
-    // Get existing members
-    let members = JSON.parse(localStorage.getItem('members')) || {};
+    // Get existing members from localStorage
+    let members = JSON.parse(localStorage.getItem('appMembers')) || {};
 
     if (!members[member.tenure]) {
       members[member.tenure] = {};
@@ -87,9 +93,9 @@ class AdminPanel {
     }
 
     members[member.tenure][member.group].push(member);
-    localStorage.setItem('members', JSON.stringify(members));
+    localStorage.setItem('appMembers', JSON.stringify(members));
 
-    this.showNotification(`${member.name} added successfully!`, 'success');
+    this.showNotification(`✓ ${member.name} added successfully!`, 'success');
     this.addMemberForm.reset();
     this.loadMembers();
   }
@@ -107,7 +113,7 @@ class AdminPanel {
     contentData[content.section] = content.content;
     localStorage.setItem('contentData', JSON.stringify(contentData));
 
-    this.showNotification('Content updated successfully!', 'success');
+    this.showNotification('✓ Content updated successfully!', 'success');
     this.editContentForm.reset();
   }
 
@@ -119,46 +125,42 @@ class AdminPanel {
       id: Date.now(),
       title: formData.get('title'),
       description: formData.get('description'),
-      technologies: formData.get('technologies').split(',').map(t => t.trim()),
+      technologies: formData.get('technologies')
+        .split(',')
+        .map((t) => t.trim()),
       github: formData.get('github'),
-      demo: formData.get('demo'),
+      demo: formData.get('demo') || '#',
       status: formData.get('status'),
       contributors: ['Admin']
     };
 
-    let projects = JSON.parse(localStorage.getItem('projects')) || [];
+    let projects = JSON.parse(localStorage.getItem('appProjects')) || [];
     projects.push(project);
-    localStorage.setItem('projects', JSON.stringify(projects));
+    localStorage.setItem('appProjects', JSON.stringify(projects));
 
-    this.showNotification(`Project "${project.title}" added successfully!`, 'success');
+    this.showNotification(
+      `✓ Project "${project.title}" added successfully!`,
+      'success'
+    );
     this.addProjectForm.reset();
   }
 
   loadMembers() {
-    const members = JSON.parse(localStorage.getItem('members')) || {};
+    const members = JSON.parse(localStorage.getItem('appMembers')) || {};
     let html = '';
 
     for (const tenure in members) {
       for (const group in members[tenure]) {
         members[tenure][group].forEach((member) => {
           html += `
-            <div class="member-item" style="
-              padding: 1rem;
-              margin-bottom: 1rem;
-              background: var(--bg-tertiary);
-              border-radius: 0.5rem;
-              display: flex;
-              justify-content: space-between;
-              align-items: center;
-              border-left: 4px solid var(--accent-primary);
-            ">
+            <div class="member-item">
               <div>
                 <strong>${member.name}</strong>
                 <p style="color: var(--text-secondary); margin: 0.25rem 0; font-size: 0.875rem;">
-                  ${member.role} • ${member.group} • ${member.tenure}
+                  ${member.role} • ${group} • ${member.tenure}
                 </p>
               </div>
-              <button class="btn btn-danger" onclick="adminPanel.deleteMember(${member.id})">
+              <button class="btn btn-danger" onclick="adminPanel.deleteMember(${member.id}, '${member.tenure}', '${group}')">
                 Remove
               </button>
             </div>
@@ -170,23 +172,30 @@ class AdminPanel {
     if (html) {
       this.membersList.innerHTML = html;
     } else {
-      this.membersList.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">No members added yet.</p>';
+      this.membersList.innerHTML =
+        '<p style="color: var(--text-secondary); text-align: center; padding: 2rem;">No members added yet.</p>';
     }
   }
 
-  deleteMember(id) {
-    const members = JSON.parse(localStorage.getItem('members')) || {};
+  deleteMember(id, tenure, group) {
+    const members = JSON.parse(localStorage.getItem('appMembers')) || {};
 
-    for (const tenure in members) {
-      for (const group in members[tenure]) {
-        members[tenure][group] = members[tenure][group].filter(
-          (m) => m.id !== id
-        );
+    if (members[tenure] && members[tenure][group]) {
+      members[tenure][group] = members[tenure][group].filter(
+        (m) => m.id !== id
+      );
+
+      // Clean up empty objects
+      if (members[tenure][group].length === 0) {
+        delete members[tenure][group];
+      }
+      if (Object.keys(members[tenure]).length === 0) {
+        delete members[tenure];
       }
     }
 
-    localStorage.setItem('members', JSON.stringify(members));
-    this.showNotification('Member removed successfully!', 'success');
+    localStorage.setItem('appMembers', JSON.stringify(members));
+    this.showNotification('✓ Member removed successfully!', 'success');
     this.loadMembers();
   }
 
@@ -194,23 +203,24 @@ class AdminPanel {
     const notification = document.createElement('div');
     notification.className = `notification notification-${type}`;
     notification.textContent = message;
+
+    const bgColor = type === 'success' ? '#10b981' : 
+                    type === 'error' ? '#ef4444' : 
+                    '#3b82f6';
+
     notification.style.cssText = `
       position: fixed;
       top: 100px;
       right: 20px;
       padding: 1rem 1.5rem;
-      background: ${
-        type === 'success'
-          ? '#10b981'
-          : type === 'error'
-          ? '#ef4444'
-          : '#3b82f6'
-      };
+      background: ${bgColor};
       color: white;
       border-radius: 0.5rem;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      z-index: 10000;
+      z-index: 10001;
       animation: slideInDown 0.4s ease-out;
+      font-weight: 500;
+      max-width: 300px;
     `;
 
     document.body.appendChild(notification);

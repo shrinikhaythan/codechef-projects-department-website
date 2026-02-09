@@ -10,7 +10,6 @@
   <meta name="theme-color" content="#ff6b35">
   <meta property="og:title" content="CodeChef Projects Department - VIT Chennai">
   <meta property="og:description" content="Join our talented team of developers, designers, and innovators">
-  <meta property="og:image" content="assets/cc-og.jpg">
   <meta property="og:url" content="https://codechef-projects.vercel.app">
   <link rel="canonical" href="https://codechef-projects.vercel.app">
   
@@ -22,8 +21,7 @@
 
 <body>
   <!-- Custom Cursor -->
-  <div class="cursor"></div>
-  <div class="cursor-dot"></div>
+  <div class="custom-cursor"></div>
 
   <div class="app">
     <!-- STICKY NAVIGATION BAR -->
@@ -65,8 +63,7 @@
               <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
             </svg>
           </button>
-          <button class="btn btn-primary" id="recruitBtn">Apply Now</button>
-          <button class="admin-btn" id="adminToggle">Admin</button>
+          <button class="btn btn-primary" id="loginBtn">Login</button>
         </div>
 
         <!-- Mobile Menu Toggle -->
@@ -91,8 +88,8 @@
         <div class="hero-content">
           <div class="hero-text">
             <h1 class="hero-title">
-              <span class="text-animate">Welcome to</span>
-              <span class="text-animate highlight">Projects Department</span>
+              <span class="text-animate word-1">Welcome to</span>
+              <span class="text-animate word-2 highlight">Projects Department</span>
             </h1>
             <p class="hero-subtitle">
               Building real-world applications, research-driven solutions, and collaborative software systems
@@ -112,7 +109,7 @@
               </div>
             </div>
             <div class="hero-buttons">
-              <button class="btn btn-primary btn-lg" id="heroRecruitBtn">Join Our Team</button>
+              <a href="recruitment.html" target="_blank" class="btn btn-primary btn-lg">Join Our Team</a>
               <a href="#projects" class="btn btn-secondary btn-lg">Explore Projects</a>
             </div>
           </div>
@@ -151,15 +148,6 @@
           <button class="tenure-btn" data-tenure="alumni">Alumni</button>
         </div>
 
-        <!-- Tenure Carousel -->
-        <div class="tenure-carousel">
-          <div class="carousel-track" id="peopleCarousel">
-            <!-- Populated by JS -->
-          </div>
-          <button class="carousel-btn prev" id="prevBtn" aria-label="Previous">❮</button>
-          <button class="carousel-btn next" id="nextBtn" aria-label="Next">❯</button>
-        </div>
-
         <!-- Category Tabs -->
         <div class="tabs-container">
           <button class="tab-btn active" data-group="leads">Leads</button>
@@ -177,9 +165,7 @@
           <p class="section-subtitle">Showcasing our latest innovations</p>
         </div>
 
-        <div class="featured-carousel" id="featuredCarousel">
-          <!-- Populated by JS -->
-        </div>
+        <div id="featuredDisplay" class="projects-grid"></div>
       </section>
 
       <!-- PROJECTS SECTION -->
@@ -318,111 +304,12 @@
       </footer>
     </main>
 
-    <!-- ADMIN MODAL -->
-    <div class="modal" id="adminModal">
-      <div class="modal-content">
-        <button class="close-modal" id="closeAdminModal">&times;</button>
-        <div class="admin-container">
-          <div class="admin-header">
-            <h2>Admin Dashboard</h2>
-            <div class="admin-controls">
-              <button class="btn btn-secondary" id="adminLogout">Logout</button>
-            </div>
-          </div>
-
-          <div class="admin-tabs">
-            <button class="admin-tab-btn active" data-tab="members">Members Management</button>
-            <button class="admin-tab-btn" data-tab="content">Content Management</button>
-            <button class="admin-tab-btn" data-tab="projects">Projects Management</button>
-            <button class="admin-tab-btn" data-tab="settings">Settings</button>
-          </div>
-
-          <div class="admin-content" id="adminContent">
-            <!-- Members Tab -->
-            <div class="admin-tab-content active" data-tab="members">
-              <div class="admin-section">
-                <h3>Add New Member</h3>
-                <form id="addMemberForm" class="admin-form">
-                  <input type="text" placeholder="Name" name="name" required>
-                  <input type="email" placeholder="Email" name="email" required>
-                  <input type="text" placeholder="Role" name="role" required>
-                  <select name="group" required>
-                    <option>-- Select Group --</option>
-                    <option value="leads">Leads</option>
-                    <option value="members">Members</option>
-                    <option value="mentors">Mentors</option>
-                  </select>
-                  <select name="tenure" required>
-                    <option>-- Select Tenure --</option>
-                    <option value="2025-26">2025-26</option>
-                    <option value="2024-25">2024-25</option>
-                    <option value="2023-24">2023-24</option>
-                  </select>
-                  <input type="text" placeholder="LinkedIn URL" name="linkedin">
-                  <input type="text" placeholder="GitHub URL" name="github">
-                  <input type="text" placeholder="Photo URL" name="photo">
-                  <button type="submit" class="btn btn-primary">Add Member</button>
-                </form>
-              </div>
-
-              <div class="admin-section">
-                <h3>Members List</h3>
-                <div id="membersList" class="admin-list"></div>
-              </div>
-            </div>
-
-            <!-- Content Tab -->
-            <div class="admin-tab-content" data-tab="content">
-              <div class="admin-section">
-                <h3>Edit Section Content</h3>
-                <form id="editContentForm" class="admin-form">
-                  <select name="section" required>
-                    <option>-- Select Section --</option>
-                    <option value="hero">Hero Section</option>
-                    <option value="about">About Section</option>
-                    <option value="features">Features Section</option>
-                  </select>
-                  <textarea placeholder="Content" name="content" required rows="6"></textarea>
-                  <button type="submit" class="btn btn-primary">Update Content</button>
-                </form>
-              </div>
-            </div>
-
-            <!-- Projects Tab -->
-            <div class="admin-tab-content" data-tab="projects">
-              <div class="admin-section">
-                <h3>Add New Project</h3>
-                <form id="addProjectForm" class="admin-form">
-                  <input type="text" placeholder="Project Title" name="title" required>
-                  <textarea placeholder="Description" name="description" required></textarea>
-                  <input type="text" placeholder="Technologies (comma separated)" name="technologies" required>
-                  <input type="text" placeholder="GitHub URL" name="github" required>
-                  <input type="text" placeholder="Demo URL" name="demo">
-                  <select name="status" required>
-                    <option value="ongoing">Ongoing</option>
-                    <option value="completed">Completed</option>
-                  </select>
-                  <button type="submit" class="btn btn-primary">Add Project</button>
-                </form>
-              </div>
-            </div>
-
-            <!-- Settings Tab -->
-            <div class="admin-tab-content" data-tab="settings">
-              <div class="admin-section">
-                <h3>Admin Settings</h3>
-                <p>General settings and configurations coming soon...</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <!-- LOGIN MODAL -->
-    <div class="modal" id="loginModal" style="display: flex;">
+    <div class="modal modal-login" id="loginModal">
       <div class="login-container">
         <div class="login-box">
+          <button class="close-modal" id="closeLoginModal">&times;</button>
+          
           <div class="login-header">
             <img src="assets/cc.svg" alt="CodeChef" class="login-logo">
             <h2>Admin Login</h2>
@@ -432,15 +319,119 @@
           <form id="loginForm" class="login-form">
             <div class="form-group">
               <label for="email">Email</label>
-              <input type="email" id="email" name="email" placeholder="your@email.com" required>
+              <input type="email" id="email" name="email" placeholder="admin@codechef-projects.com" required>
             </div>
             <div class="form-group">
               <label for="password">Password</label>
               <input type="password" id="password" name="password" placeholder="••••••••" required>
             </div>
             <button type="submit" class="btn btn-primary btn-block">Login</button>
-            <p class="login-note">Contact department leads for admin credentials</p>
+            <p class="login-note">
+              Demo Credentials:<br>
+              <strong>admin@codechef-projects.com</strong><br>
+              <strong>Admin@123</strong>
+            </p>
           </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADMIN MODAL -->
+    <div class="modal modal-admin" id="adminModal">
+      <div class="admin-modal-content">
+        <div class="admin-header">
+          <h2>Admin Dashboard</h2>
+          <div class="admin-header-controls">
+            <span class="admin-user" id="adminUserInfo"></span>
+            <button class="btn btn-danger" id="adminLogout">Logout</button>
+            <button class="close-modal" id="closeAdminModal">&times;</button>
+          </div>
+        </div>
+
+        <div class="admin-tabs-container">
+          <button class="admin-tab-btn active" data-tab="members">Members Management</button>
+          <button class="admin-tab-btn" data-tab="content">Content Management</button>
+          <button class="admin-tab-btn" data-tab="projects">Projects Management</button>
+          <button class="admin-tab-btn" data-tab="settings">Settings</button>
+        </div>
+
+        <div class="admin-content" id="adminContent">
+          <!-- Members Tab -->
+          <div class="admin-tab-content active" data-tab="members">
+            <div class="admin-section">
+              <h3>Add New Member</h3>
+              <form id="addMemberForm" class="admin-form">
+                <input type="text" placeholder="Name" name="name" required>
+                <input type="email" placeholder="Email" name="email" required>
+                <input type="text" placeholder="Role" name="role" required>
+                <select name="group" required>
+                  <option>-- Select Group --</option>
+                  <option value="leads">Leads</option>
+                  <option value="members">Members</option>
+                  <option value="mentors">Mentors</option>
+                </select>
+                <select name="tenure" required>
+                  <option>-- Select Tenure --</option>
+                  <option value="2025-26">2025-26</option>
+                  <option value="2024-25">2024-25</option>
+                  <option value="2023-24">2023-24</option>
+                </select>
+                <input type="text" placeholder="LinkedIn URL" name="linkedin">
+                <input type="text" placeholder="GitHub URL" name="github">
+                <input type="text" placeholder="Photo URL" name="photo">
+                <button type="submit" class="btn btn-primary">Add Member</button>
+              </form>
+            </div>
+
+            <div class="admin-section">
+              <h3>Members List</h3>
+              <div id="membersList" class="admin-list"></div>
+            </div>
+          </div>
+
+          <!-- Content Tab -->
+          <div class="admin-tab-content" data-tab="content">
+            <div class="admin-section">
+              <h3>Edit Section Content</h3>
+              <form id="editContentForm" class="admin-form">
+                <select name="section" required>
+                  <option>-- Select Section --</option>
+                  <option value="hero">Hero Section</option>
+                  <option value="about">About Section</option>
+                  <option value="features">Features Section</option>
+                </select>
+                <textarea placeholder="Content" name="content" required rows="6"></textarea>
+                <button type="submit" class="btn btn-primary">Update Content</button>
+              </form>
+            </div>
+          </div>
+
+          <!-- Projects Tab -->
+          <div class="admin-tab-content" data-tab="projects">
+            <div class="admin-section">
+              <h3>Add New Project</h3>
+              <form id="addProjectForm" class="admin-form">
+                <input type="text" placeholder="Project Title" name="title" required>
+                <textarea placeholder="Description" name="description" required></textarea>
+                <input type="text" placeholder="Technologies (comma separated)" name="technologies" required>
+                <input type="text" placeholder="GitHub URL" name="github" required>
+                <input type="text" placeholder="Demo URL" name="demo">
+                <select name="status" required>
+                  <option value="ongoing">Ongoing</option>
+                  <option value="completed">Completed</option>
+                </select>
+                <button type="submit" class="btn btn-primary">Add Project</button>
+              </form>
+            </div>
+          </div>
+
+          <!-- Settings Tab -->
+          <div class="admin-tab-content" data-tab="settings">
+            <div class="admin-section">
+              <h3>Admin Settings</h3>
+              <p>General settings and configurations coming soon...</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -448,9 +439,9 @@
 
   <!-- Scripts -->
   <script src="js/data.js"></script>
-  <script src="js/auth.js"></script>
-  <script src="js/main.js"></script>
-  <script src="js/admin.js"></script>
   <script src="js/animations.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/admin.js"></script>
+  <script src="js/main.js"></script>
 </body>
 </html>
