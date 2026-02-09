@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CodeChef Projects Department</title>
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+
+<body>
+  <div class="app">
+    <!-- SIDEBAR NAVIGATION -->
+    <aside class="sidebar" id="sidebar">
+      <div class="logo-box">
+        <img src="assets/cc.svg" alt="CodeChef Logo" class="logo">
+        <span class="dept-name">Projects</span>
+      </div>
+
+      <nav class="nav-menu">
+        <a href="#dashboard" class="nav-link active" data-section="dashboard">
+          <span class="icon">🏠</span> Dashboard
+        </a>
+        <a href="#people" class="nav-link" data-section="people">
+          <span class="icon">👥</span> People
+        </a>
+        <a href="#projects" class="nav-link" data-section="projects">
+          <span class="icon">💻</span> Projects
+        </a>
+        <a href="#recruitment" class="nav-link" data-section="recruitment">
+          <span class="icon">📋</span> Recruitment
+        </a>
+        <a href="#research" class="nav-link" data-section="research">
+          <span class="icon">📚</span> Research
+        </a>
+        <a href="#achievements" class="nav-link" data-section="achievements">
+          <span class="icon">🏆</span> Achievements
+        </a>
+        <a href="#gamedev" class="nav-link" data-section="gamedev">
+          <span class="icon">🎮</span> Game Dev
+        </a>
+        <a href="#quest" class="nav-link" data-section="quest">
+          <span class="icon">⚔️</span> Quest System
+        </a>
+      </nav>
+
+      <button class="admin-btn" id="adminToggle">
+        <span class="icon">⚙️</span> Admin Panel
+      </button>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main">
+      <!-- DASHBOARD SECTION -->
+      <section class="section" id="dashboard">
+        <header class="section-header">
+          <h1>Welcome to Projects Department</h1>
+          <p class="subtitle">CodeChef VIT Chennai Chapter</p>
+        </header>
+
+        <div class="cards-grid">
+          <div class="card">
+            <h3>📌 About Us</h3>
+            <p>
+              We build real-world applications, research-driven solutions,
+              and collaborative software systems using industry-relevant technologies.
+            </p>
+          </div>
+
+          <div class="card">
+            <h3>🚀 Recruitment Open</h3>
+            <p>Join our talented team of developers, designers, and innovators.</p>
+            <a href="#recruitment" class="btn btn-primary">Apply Now</a>
+          </div>
+
+          <div class="card">
+            <h3>👑 Current Leadership</h3>
+            <div class="leads-mini">
+              <div class="lead-item">
+                <strong>Technical</strong>
+                <p>Aakash</p>
+              </div>
+              <div class="lead-item">
+                <strong>Management</strong>
+                <p>Rahul</p>
+              </div>
+              <div class="lead-item">
+                <strong>Research</strong>
+                <p>Bala</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PEOPLE SECTION -->
+      <section class="section" id="people">
+        <h2>👥 People of Projects Department</h2>
+        
+        <div class="category-tabs">
+          <button class="tab-btn active" data-group="leads">Leads</button>
+          <button class="tab-btn" data-group="members">Members</button>
+          <button class="tab-btn" data-group="mentors">Mentors</button>
+          <button class="tab-btn" data-group="alumni">Alumni</button>
+        </div>
+
+        <div id="memberDisplay" class="members-grid"></div>
+      </section>
+
+      <!-- PROJECTS SECTION -->
+      <section class="section" id="projects">
+        <h2>💻 Our Projects</h2>
+        
+        <div class="project-filters">
+          <button class="filter-btn active" data-filter="all">All</button>
+          <button class="filter-btn" data-filter="ongoing">Ongoing</button>
+          <button class="filter-btn" data-filter="completed">Completed</button>
+        </div>
+
+        <div id="projectDisplay" class="projects-grid"></div>
+      </section>
+
+      <!-- RECRUITMENT SECTION -->
+      <section class="section" id="recruitment">
+        <h2>📋 Recruitment Portal</h2>
+        
+        <div class="recruitment-container">
+          <div class="recruitment-info">
+            <h3>Join Our Team</h3>
+            <p>We're looking for passionate developers, researchers, and innovators.</p>
+            <ul class="requirements-list">
+              <li>Strong problem-solving skills</li>
+              <li>Collaborative mindset</li>
+              <li>Passion for learning</li>
+              <li>Commitment to quality</li>
+            </ul>
+          </div>
+
+          <form class="recruit-form" id="recruitForm">
+            <div class="form-group">
+              <label for="fullName">Full Name *</label>
+              <input type="text" id="fullName" name="fullName" placeholder="John Doe" required>
+            </div>
+
+            <div class="form-group">
+              <label for="email">Email *</label>
+              <input type="email" id="email" name="email" placeholder="john@example.com" required>
+            </div>
+
+            <div class="form-group">
+              <label for="phone">Phone</label>
+              <input type="tel" id="phone" name="phone" placeholder="+91 98765 43210">
+            </div>
+
+            <div class="form-group">
+              <label for="role">Select Role *</label>
+              <select id="role" name="role" required>
+                <option value="">-- Choose a role --</option>
+                <option value="frontend">Frontend Developer</option>
+                <option value="backend">Backend Developer</option>
+                <option value="gamedev">Game Developer</option>
+                <option value="research">Researcher</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="skills">Key Skills</label>
+              <input type="text" id="skills" name="skills" placeholder="e.g., React, Node.js, Python">
+            </div>
+
+            <div class="form-group">
+              <label for="why">Why should we select you? *</label>
+              <textarea id="why" name="why" placeholder="Tell us about your experience and passion..." required></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="portfolio">Portfolio / GitHub</label>
+              <input type="url" id="portfolio" name="portfolio" placeholder="https://github.com/yourprofile">
+            </div>
+
+            <button type="submit" class="btn btn-primary">Submit Application</button>
+          </form>
+        </div>
+
+        <div class="note-box">
+          <strong>ℹ️ Note:</strong> Applications will be reviewed, results announced here, 
+          and interview slots scheduled via this portal.
+        </div>
+      </section>
+
+      <!-- RESEARCH SECTION -->
+      <section class="section" id="research">
+        <h2>📚 Research Contributions</h2>
+        
+        <div id="researchDisplay" class="research-grid"></div>
+      </section>
+
+      <!-- ACHIEVEMENTS SECTION -->
+      <section class="section" id="achievements">
+        <h2>🏆 Hackathons & Achievements</h2>
+        
+        <div class="achievement-tabs">
+          <button class="tab-btn active" data-type="awards">Awards</button>
+          <button class="tab-btn" data-type="milestones">Milestones</button>
+          <button class="tab-btn" data-type="hackathons">Hackathons</button>
+        </div>
+
+        <div id="achievementDisplay" class="achievements-grid"></div>
+      </section>
+
+      <!-- GAME DEV SECTION -->
+      <section class="section" id="gamedev">
+        <h2>🎮 Game Development Wing</h2>
+        
+        <div class="gamedev-tabs">
+          <button class="tab-btn active" data-type="members">Members</button>
+          <button class="tab-btn" data-type="projects">Projects</button>
+          <button class="tab-btn" data-type="tools">Tools</button>
+          <button class="tab-btn" data-type="events">Events</button>
+        </div>
+
+        <div id="gamedevDisplay" class="gamedev-grid"></div>
+      </section>
+
+      <!-- QUEST SYSTEM SECTION -->
+      <section class="section" id="quest">
+        <h2>⚔️ Internal Quest System</h2>
+        
+        <div class="quest-tabs">
+          <button class="tab-btn active" data-type="leaderboard">Leaderboard</button>
+          <button class="tab-btn" data-type="contributions">Contributions</button>
+          <button class="tab-btn" data-type="winners">Winners</button>
+        </div>
+
+        <div id="questDisplay" class="quest-content"></div>
+      </section>
+
+      <!-- FOOTER -->
+      <footer class="footer">
+        <p>&copy; 2026 CodeChef Projects Department. All rights reserved.</p>
+      </footer>
+    </main>
+
+    <!-- ADMIN MODAL (hidden by default) -->
+    <div class="modal" id="adminModal" style="display:none;">
+      <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <h2>Admin Panel</h2>
+        <div class="admin-tabs">
+          <button class="admin-tab-btn active" data-tab="users">Manage Users</button>
+          <button class="admin-tab-btn" data-tab="content">Manage Content</button>
+          <button class="admin-tab-btn" data-tab="permissions">Permissions</button>
+        </div>
+        <div id="adminContent" class="admin-tab-content"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>
