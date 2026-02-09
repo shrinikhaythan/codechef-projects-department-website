@@ -1,5 +1,5 @@
 // ============================================
-// AUTHENTICATION SYSTEM
+// AUTHENTICATION SYSTEM - FIXED
 // ============================================
 
 class AuthManager {
@@ -23,6 +23,14 @@ class AuthManager {
       }
     ];
 
+    // ENSURE MODALS ARE HIDDEN ON LOAD
+    if (this.loginModal) {
+      this.loginModal.style.display = 'none';
+    }
+    if (this.adminModal) {
+      this.adminModal.style.display = 'none';
+    }
+
     this.init();
   }
 
@@ -33,12 +41,10 @@ class AuthManager {
   }
 
   setupEventListeners() {
-    // Login form submission
     if (this.loginForm) {
       this.loginForm.addEventListener('submit', (e) => this.handleLogin(e));
     }
 
-    // Admin toggle button
     if (this.adminToggle) {
       this.adminToggle.addEventListener('click', (e) => {
         e.preventDefault();
@@ -46,22 +52,18 @@ class AuthManager {
       });
     }
 
-    // Close login modal button
     if (this.closeLoginModal) {
       this.closeLoginModal.addEventListener('click', () => this.closeLogin());
     }
 
-    // Close admin modal button
     if (this.closeAdminModal) {
       this.closeAdminModal.addEventListener('click', () => this.closeAdmin());
     }
 
-    // Admin logout button
     if (this.adminLogout) {
       this.adminLogout.addEventListener('click', () => this.logout());
     }
 
-    // Close modal on background click
     if (this.loginModal) {
       this.loginModal.addEventListener('click', (e) => {
         if (e.target === this.loginModal) {
@@ -78,7 +80,6 @@ class AuthManager {
       });
     }
 
-    // Admin tab switching
     document.querySelectorAll('.admin-tab-btn').forEach((btn) => {
       btn.addEventListener('click', (e) => this.switchAdminTab(e));
     });
@@ -90,33 +91,24 @@ class AuthManager {
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
 
-    // Validate credentials
     const admin = this.admins.find(
       (a) => a.email === email && a.password === password
     );
 
     if (admin) {
-      // Successful login
       this.currentUser = {
         email: email,
         role: 'admin',
         loginTime: new Date()
       };
 
-      // Store in localStorage
       localStorage.setItem('currentUser', JSON.stringify(this.currentUser));
-
-      // Show success notification
       this.showNotification('✓ Login successful! Welcome back.', 'success');
-
-      // Reset form
       this.loginForm.reset();
 
-      // Close login modal
       setTimeout(() => {
         this.closeLogin();
         
-        // Open admin modal
         setTimeout(() => {
           this.openAdmin();
           this.updateAdminUI();
@@ -124,8 +116,7 @@ class AuthManager {
       }, 500);
 
     } else {
-      // Failed login
-      this.showNotification('✗ Invalid email or password. Try again.', 'error');
+      this.showNotification('✗ Invalid email or password.', 'error');
       this.loginForm.reset();
     }
   }
@@ -144,10 +135,8 @@ class AuthManager {
 
   openAdminPanel() {
     if (!this.currentUser) {
-      // Open login modal
       this.openLogin();
     } else {
-      // Open admin modal
       this.openAdmin();
     }
   }
@@ -168,7 +157,6 @@ class AuthManager {
 
   openAdmin() {
     if (this.adminModal) {
-      this.adminModal.classList.add('active');
       this.adminModal.style.display = 'flex';
       document.body.style.overflow = 'hidden';
     }
@@ -176,24 +164,17 @@ class AuthManager {
 
   closeAdmin() {
     if (this.adminModal) {
-      this.adminModal.classList.remove('active');
       this.adminModal.style.display = 'none';
       document.body.style.overflow = 'auto';
     }
   }
 
   logout() {
-    // Clear user data
     localStorage.removeItem('currentUser');
     this.currentUser = null;
-
-    // Close admin modal
     this.closeAdmin();
-
-    // Show logout notification
     this.showNotification('✓ Logged out successfully!', 'success');
 
-    // Optionally reset form
     if (this.loginForm) {
       this.loginForm.reset();
     }
@@ -202,13 +183,11 @@ class AuthManager {
   switchAdminTab(e) {
     const tabName = e.target.dataset.tab;
 
-    // Update active button
     document.querySelectorAll('.admin-tab-btn').forEach((btn) => {
       btn.classList.remove('active');
     });
     e.target.classList.add('active');
 
-    // Update active content
     document.querySelectorAll('.admin-tab-content').forEach((content) => {
       content.classList.remove('active');
     });
@@ -251,22 +230,16 @@ class AuthManager {
       z-index: 10001;
       animation: slideInDown 0.4s ease-out;
       font-weight: 500;
-      max-width: 300px;
     `;
 
     document.body.appendChild(notification);
 
-    // Auto remove after 3 seconds
     setTimeout(() => {
-      notification.style.animation = 'slideInUp 0.4s ease-out forwards';
-      setTimeout(() => {
-        notification.remove();
-      }, 400);
+      notification.remove();
     }, 3000);
   }
 }
 
-// Initialize Auth Manager when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
   new AuthManager();
 });

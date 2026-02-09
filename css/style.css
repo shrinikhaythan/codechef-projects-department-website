@@ -271,6 +271,7 @@ body {
   display: flex;
   gap: var(--spacing-md);
   align-items: center;
+  flex-wrap: wrap;
 }
 
 .theme-toggle {
@@ -775,7 +776,8 @@ body {
 .projects-grid,
 .research-grid,
 .achievements-grid,
-.gamedev-grid {
+.gamedev-grid,
+.quest-content {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: var(--spacing-lg);
@@ -964,8 +966,15 @@ body {
 }
 
 /* ============================================
-   MODALS
+   MODALS - HIDE BY DEFAULT
    ============================================ */
+
+#loginModal,
+#adminModal,
+#userLoginModal,
+#userSignupModal {
+  display: none !important;
+}
 
 .modal {
   position: fixed;
@@ -982,13 +991,10 @@ body {
   backdrop-filter: blur(5px);
 }
 
-.modal.modal-login {
-  display: flex !important;
-}
-
 .login-container {
   width: 100%;
   max-width: 450px;
+  margin: 0 auto;
 }
 
 .login-box {
@@ -1025,8 +1031,9 @@ body {
 .login-logo {
   width: 80px;
   height: 80px;
-  margin-bottom: var(--spacing-lg);
+  margin: 0 auto var(--spacing-lg);
   filter: drop-shadow(0 4px 8px rgba(255, 107, 53, 0.3));
+  display: block;
 }
 
 .login-header h2 {
@@ -1058,6 +1065,16 @@ body {
   text-align: center;
   border-left: 4px solid var(--accent-info);
   line-height: 1.6;
+}
+
+.login-note a {
+  color: var(--accent-primary);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.login-note a:hover {
+  text-decoration: underline;
 }
 
 /* Admin Modal */
@@ -1210,6 +1227,54 @@ body {
 
 .member-item:hover {
   box-shadow: var(--shadow-md);
+}
+
+/* ============================================
+   NOTIFICATIONS & ANIMATIONS
+   ============================================ */
+
+@keyframes modalIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.notification {
+  animation: slideInDown 0.4s ease-out;
+}
+
+.notification-success {
+  background: var(--accent-success) !important;
+}
+
+.notification-error {
+  background: var(--accent-danger) !important;
+}
+
+.notification-info {
+  background: var(--accent-info) !important;
+}
+
+#userProfile {
+  display: inline-block;
+  padding: 0 var(--spacing-md);
+  font-weight: 500;
 }
 
 /* ============================================
@@ -1376,7 +1441,8 @@ body {
   .projects-grid,
   .research-grid,
   .achievements-grid,
-  .gamedev-grid {
+  .gamedev-grid,
+  .quest-content {
     grid-template-columns: 1fr;
   }
 
@@ -1433,6 +1499,10 @@ body {
 
   .footer-content {
     grid-template-columns: 1fr;
+  }
+
+  .nav-controls {
+    gap: var(--spacing-sm);
   }
 }
 
