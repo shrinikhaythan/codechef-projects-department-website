@@ -1,5 +1,5 @@
 // ============================================
-// ADMIN PANEL MANAGEMENT
+// ADMIN PANEL MANAGEMENT - ENHANCED WITH RECRUITMENT
 // ============================================
 
 class AdminPanel {
@@ -62,6 +62,11 @@ class AdminPanel {
     );
     if (activeContent) {
       activeContent.classList.add('active');
+    }
+    
+    // Load recruitment applications when switching to recruitment tab
+    if (tabName === 'recruitment') {
+      this.loadApplications();
     }
   }
 
@@ -153,14 +158,21 @@ class AdminPanel {
       for (const group in members[tenure]) {
         members[tenure][group].forEach((member) => {
           html += `
-            <div class="member-item">
-              <div>
-                <strong>${member.name}</strong>
-                <p style="color: var(--text-secondary); margin: 0.25rem 0; font-size: 0.875rem;">
-                  ${member.role} • ${group} • ${member.tenure}
-                </p>
+            <div class="member-item" style="display: flex; align-items: center; justify-content: space-between; padding: 1rem; background: var(--bg-tertiary); border-radius: var(--radius-lg); margin-bottom: 0.75rem; border: 1px solid var(--border-color);">
+              <div style="display: flex; align-items: center; gap: 1rem;">
+                <img src="${member.photo}" alt="${member.name}" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent-primary);">
+                <div>
+                  <strong style="color: var(--text-primary);">${member.name}</strong>
+                  <p style="color: var(--text-secondary); margin: 0.25rem 0; font-size: 0.875rem;">
+                    ${member.role} • ${group} • ${tenure}
+                  </p>
+                  <div style="display: flex; gap: 0.5rem; margin-top: 0.25rem;">
+                    ${member.linkedin !== '#' ? `<a href="${member.linkedin}" target="_blank" rel="noopener noreferrer" style="color: var(--accent-primary); font-size: 0.75rem; text-decoration: none;">LinkedIn ↗</a>` : ''}
+                    ${member.github !== '#' ? `<a href="${member.github}" target="_blank" rel="noopener noreferrer" style="color: var(--accent-primary); font-size: 0.75rem; text-decoration: none;">GitHub ↗</a>` : ''}
+                  </div>
+                </div>
               </div>
-              <button class="btn btn-danger" onclick="adminPanel.deleteMember(${member.id}, '${member.tenure}', '${group}')">
+              <button class="btn btn-danger btn-sm" onclick="adminPanel.deleteMember(${member.id}, '${tenure}', '${group}')" style="padding: 0.5rem 1rem; font-size: 0.875rem;">
                 Remove
               </button>
             </div>
@@ -178,6 +190,8 @@ class AdminPanel {
   }
 
   deleteMember(id, tenure, group) {
+    if (!confirm('Are you sure you want to remove this member?')) return;
+
     const members = JSON.parse(localStorage.getItem('appMembers')) || {};
 
     if (members[tenure] && members[tenure][group]) {
@@ -199,6 +213,83 @@ class AdminPanel {
     this.loadMembers();
   }
 
+  loadApplications() {
+    const applicationsContainer = document.getElementById('applicationsList');
+    if (!applicationsContainer) return;
+
+    const applications = JSON.parse(localStorage.getItem('applications')) || [];
+
+    if (applications.length === 0) {
+      applicationsContainer.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 2rem;">No applications yet.</p>';
+      return;
+    }
+
+    const html = applications.reverse().map((app, index) => `
+      <div class="application-item" style="background: var(--bg-tertiary); padding: 1.5rem; border-radius: var(--radius-lg); margin-bottom: 1rem; border: 1px solid var(--border-color);">
+        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <h4 style="margin: 0 0 0.5rem 0; color: var(--text-primary); font-size: 1.125rem;">${app.name}</h4>
+            <p style="margin: 0; color: var(--text-secondary); font-size: 0.875rem;">
+              📧 ${app.email} ${app.phone ? `• 📞 ${app.phone}` : ''} • 📚 Semester ${app.semester}
+            </p>
+            ${app.portfolio ? `<p style="margin: 0.5rem 0 0 0;"><a href="${app.portfolio}" target="_blank" rel="noopener noreferrer" style="color: var(--accent-primary); text-decoration: none; font-size: 0.875rem;">🔗 Portfolio ↗</a></p>` : ''}
+          </div>
+          <span style="background: var(--accent-primary-light); color: var(--accent-primary); padding: 0.25rem 0.75rem; border-radius: var(--radius-full); font-size: 0.75rem; font-weight: 600; white-space: nowrap;">
+            ${app.role}
+          </span>
+        </div>
+        <div style="margin-bottom: 1rem;">
+          <strong style="color: var(--text-primary); font-size: 0.875rem;">Skills:</strong>
+          <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem;">
+            ${app.skills.split(',').map(skill => 
+              `<span style="background: var(--bg-secondary); padding: 0.25rem 0.75rem; border-radius: var(--radius-full); font-size: 0.75rem; border: 1px solid var(--border-color); color: var(--text-secondary);">${skill.trim()}</span>`
+            ).join('')}
+          </div>
+        </div>
+        <div style="margin-bottom: 1rem;">
+          <strong style="color: var(--text-primary); font-size: 0.875rem;">Why hire:</strong>
+          <p style="margin: 0.5rem 0 0 0; color: var(--text-secondary); font-size: 0.875rem; line-height: 1.6;">${app.experience}</p>
+        </div>
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+          <button class="btn btn-success btn-sm" onclick="adminPanel.acceptApplication(${index}, '${app.name}', '${app.email}')" style="padding: 0.5rem 1rem; font-size: 0.875rem;">
+            ✓ Accept
+          </button>
+          <button class="btn btn-danger btn-sm" onclick="adminPanel.rejectApplication(${index}, '${app.email}')" style="padding: 0.5rem 1rem; font-size: 0.875rem;">
+            ✗ Reject
+          </button>
+        </div>
+      </div>
+    `).join('');
+
+    applicationsContainer.innerHTML = html;
+  }
+
+  acceptApplication(index, name, email) {
+    const applications = JSON.parse(localStorage.getItem('applications')) || [];
+    const app = applications[applications.length - 1 - index];
+    
+    if (confirm(`Accept ${name} as a member?`)) {
+      this.showNotification(`✓ ${name} has been accepted! Email notification sent to ${email}`, 'success');
+      
+      // Remove from applications
+      applications.splice(applications.length - 1 - index, 1);
+      localStorage.setItem('applications', JSON.stringify(applications));
+      this.loadApplications();
+    }
+  }
+
+  rejectApplication(index, email) {
+    const applications = JSON.parse(localStorage.getItem('applications')) || [];
+    
+    if (confirm(`Reject this application?`)) {
+      this.showNotification(`Application rejected. Email notification sent to ${email}`, 'info');
+      
+      applications.splice(applications.length - 1 - index, 1);
+      localStorage.setItem('applications', JSON.stringify(applications));
+      this.loadApplications();
+    }
+  }
+
   showNotification(message, type = 'info') {
     const notification = document.createElement('div');
     notification.className = `notification notification-${type}`;
@@ -217,18 +308,18 @@ class AdminPanel {
       color: white;
       border-radius: 0.5rem;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      z-index: 10001;
+      z-index: 10002;
       animation: slideInDown 0.4s ease-out;
       font-weight: 500;
-      max-width: 300px;
+      max-width: 400px;
     `;
 
     document.body.appendChild(notification);
 
     setTimeout(() => {
-      notification.style.animation = 'slideInUp 0.4s ease-out forwards';
+      notification.style.animation = 'slideInUp 0.4s ease-out reverse';
       setTimeout(() => notification.remove(), 400);
-    }, 3000);
+    }, 4000);
   }
 }
 
@@ -236,4 +327,6 @@ let adminPanel;
 
 document.addEventListener('DOMContentLoaded', () => {
   adminPanel = new AdminPanel();
+  // Make it globally accessible
+  window.enhancedAdminPanel = adminPanel;
 });

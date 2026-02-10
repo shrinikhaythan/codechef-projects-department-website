@@ -8,6 +8,7 @@
   <title>Recruitment - CodeChef Projects Department | VIT Chennai</title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/cursor.css">
   <link rel="icon" type="image/svg+xml" href="assets/cc.svg">
   <style>
     .recruitment-page {
@@ -90,13 +91,14 @@
     }
 
     .recruitment-form {
-      background: var(--bg-secondary);
-      padding: var(--spacing-2xl);
-      border-radius: var(--radius-xl);
-      border: 1px solid var(--border-color);
-      animation: slideInRight 0.8s ease-out;
-      box-shadow: var(--shadow-lg);
-    }
+	  background: var(--bg-secondary);
+	  padding: var(--spacing-2xl);
+	  border-radius: var(--radius-xl);
+	  border: 1px solid var(--border-color);
+	  animation: slideInRight 0.8s ease-out;
+	  box-shadow: var(--shadow-lg);
+	  transition: none; /* Remove all transitions */
+	}
 
     .form-group {
       margin-bottom: var(--spacing-lg);
@@ -201,7 +203,9 @@
 
 <body>
   <!-- Custom Cursor -->
-  <div class="cursor"></div>
+  <div class="cursor">
+    <div class="cursor-arrow"></div>
+  </div>
   <div class="cursor-dot"></div>
 
   <div class="recruitment-page">
@@ -433,5 +437,6 @@
       }
     });
   </script>
+  <script src="js/cursor.js"></script>
 </body>
 </html>

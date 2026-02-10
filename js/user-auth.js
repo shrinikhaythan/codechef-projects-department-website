@@ -1,5 +1,6 @@
 // ============================================
-// USER AUTHENTICATION SYSTEM
+// USER AUTHENTICATION SYSTEM - FIXED & COMPLETE
+// SEPARATE FROM ADMIN - NO SCROLL LOCK
 // ============================================
 
 class UserAuth {
@@ -14,21 +15,27 @@ class UserAuth {
     this.toggleLoginLink = document.getElementById('toggleLogin');
     this.currentUser = null;
 
-    // ENSURE MODALS ARE HIDDEN ON LOAD
+    this.init();
+  }
+
+  init() {
+    // Force hide all modals on initialization
+    this.hideAllModals();
+    this.setupEventListeners();
+    this.checkUserLoginStatus();
+    this.updateUserUI();
+  }
+
+  hideAllModals() {
     if (this.userLoginModal) {
       this.userLoginModal.style.display = 'none';
     }
     if (this.userSignupModal) {
       this.userSignupModal.style.display = 'none';
     }
-    
-    this.init();
-  }
-
-  init() {
-    this.setupEventListeners();
-    this.checkUserLoginStatus();
-    this.updateUserUI();
+    // Ensure body scrolling is ALWAYS enabled
+    document.body.style.overflow = 'auto';
+    document.body.style.position = 'static';
   }
 
   setupEventListeners() {
@@ -43,6 +50,7 @@ class UserAuth {
     if (this.userLoginBtn) {
       this.userLoginBtn.addEventListener('click', (e) => {
         e.preventDefault();
+        e.stopPropagation();
         this.openUserLogin();
       });
     }
@@ -68,6 +76,7 @@ class UserAuth {
       });
     }
 
+    // Close modal when clicking outside
     if (this.userLoginModal) {
       this.userLoginModal.addEventListener('click', (e) => {
         if (e.target === this.userLoginModal) {
@@ -83,6 +92,31 @@ class UserAuth {
         }
       });
     }
+
+    // Close buttons
+    const closeLoginBtn = this.userLoginModal?.querySelector('.close-modal');
+    if (closeLoginBtn) {
+      closeLoginBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        this.closeUserLogin();
+      });
+    }
+
+    const closeSignupBtn = this.userSignupModal?.querySelector('.close-modal');
+    if (closeSignupBtn) {
+      closeSignupBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        this.closeUserSignup();
+      });
+    }
+
+    // ESC key to close modals
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        this.closeUserLogin();
+        this.closeUserSignup();
+      }
+    });
   }
 
   handleUserLogin(e) {
@@ -114,7 +148,6 @@ class UserAuth {
 
     } else {
       this.showNotification('✗ Invalid email or password.', 'error');
-      this.userLoginForm.reset();
     }
   }
 
@@ -182,7 +215,16 @@ class UserAuth {
   openUserLogin() {
     if (this.userLoginModal) {
       this.userLoginModal.style.display = 'flex';
-      document.body.style.overflow = 'hidden';
+      // NO SCROLL LOCK - body can scroll
+      this.userLoginModal.style.overflowY = 'auto';
+      document.body.style.overflow = 'auto';
+      document.body.style.position = 'static';
+      
+      // Focus on first input
+      setTimeout(() => {
+        const firstInput = this.userLoginModal.querySelector('input');
+        if (firstInput) firstInput.focus();
+      }, 100);
     }
   }
 
@@ -190,6 +232,7 @@ class UserAuth {
     if (this.userLoginModal) {
       this.userLoginModal.style.display = 'none';
       document.body.style.overflow = 'auto';
+      document.body.style.position = 'static';
     }
   }
 
@@ -197,6 +240,7 @@ class UserAuth {
     if (this.userSignupModal) {
       this.userSignupModal.style.display = 'none';
       document.body.style.overflow = 'auto';
+      document.body.style.position = 'static';
     }
   }
 
@@ -205,16 +249,24 @@ class UserAuth {
     setTimeout(() => {
       if (this.userSignupModal) {
         this.userSignupModal.style.display = 'flex';
-        document.body.style.overflow = 'hidden';
+        this.userSignupModal.style.overflowY = 'auto';
+        document.body.style.overflow = 'auto';
+        document.body.style.position = 'static';
+        
+        // Focus on first input
+        setTimeout(() => {
+          const firstInput = this.userSignupModal.querySelector('input');
+          if (firstInput) firstInput.focus();
+        }, 100);
       }
-    }, 300);
+    }, 200);
   }
 
   switchToLogin() {
     this.closeUserSignup();
     setTimeout(() => {
       this.openUserLogin();
-    }, 300);
+    }, 200);
   }
 
   logoutUser() {
@@ -233,7 +285,7 @@ class UserAuth {
       if (userLoginBtn) userLoginBtn.style.display = 'none';
       if (userLogoutBtn) userLogoutBtn.style.display = 'inline-block';
       if (userProfile) {
-        userProfile.innerHTML = `${this.currentUser.name}`;
+        userProfile.innerHTML = `<span style="color: var(--accent-primary); font-weight: 600;">👤 ${this.currentUser.name}</span>`;
       }
     } else {
       if (userLoginBtn) userLoginBtn.style.display = 'inline-block';
@@ -257,7 +309,9 @@ class UserAuth {
     notification.className = `notification notification-${type}`;
     notification.textContent = message;
 
-    const bgColor = type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#3b82f6';
+    const bgColor = type === 'success' ? '#10b981' : 
+                    type === 'error' ? '#ef4444' : 
+                    '#3b82f6';
 
     notification.style.cssText = `
       position: fixed;
@@ -268,19 +322,22 @@ class UserAuth {
       color: white;
       border-radius: 0.5rem;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      z-index: 10000;
+      z-index: 10002;
       animation: slideInDown 0.4s ease-out;
       font-weight: 500;
+      max-width: 350px;
     `;
 
     document.body.appendChild(notification);
 
     setTimeout(() => {
-      notification.remove();
+      notification.style.animation = 'slideInUp 0.4s ease-out reverse';
+      setTimeout(() => notification.remove(), 400);
     }, 3000);
   }
 }
 
+// Initialize on DOM ready
 document.addEventListener('DOMContentLoaded', () => {
   new UserAuth();
 });

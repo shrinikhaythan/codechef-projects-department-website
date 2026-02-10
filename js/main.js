@@ -96,12 +96,32 @@ class DepartmentPortal {
     });
   }
 
-  handleNavClick(e) {
-    e.preventDefault();
-    this.navLinks.forEach((l) => l.classList.remove('active'));
-    e.target.closest('.nav-link').classList.add('active');
-    if (this.navMenu) this.navMenu.classList.remove('active');
+handleNavClick(e) {
+  const link = e.target.closest('.nav-link');
+  if (!link) return;
+  
+  e.preventDefault();
+  
+  const href = link.getAttribute('href');
+  if (href && href.startsWith('#')) {
+    const target = document.querySelector(href);
+    if (target) {
+      const navbar = document.getElementById('navbar');
+      const offset = navbar ? navbar.offsetHeight : 80;
+      const targetPosition = target.offsetTop - offset;
+      
+      window.scrollTo({
+        top: targetPosition,
+        behavior: 'smooth'
+      });
+    }
   }
+  
+  this.navLinks.forEach((l) => l.classList.remove('active'));
+  link.classList.add('active');
+  
+  if (this.navMenu) this.navMenu.classList.remove('active');
+}
 
   toggleMobileMenu() {
     if (this.navMenu) {

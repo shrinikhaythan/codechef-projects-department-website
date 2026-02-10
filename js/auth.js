@@ -1,5 +1,6 @@
 // ============================================
-// AUTHENTICATION SYSTEM - FIXED
+// AUTHENTICATION SYSTEM - FIXED & COMPLETE
+// NO SCROLL LOCK - ADMIN LOGIN ONLY
 // ============================================
 
 class AuthManager {
@@ -23,21 +24,27 @@ class AuthManager {
       }
     ];
 
-    // ENSURE MODALS ARE HIDDEN ON LOAD
+    this.init();
+  }
+
+  init() {
+    // Force hide all modals on initialization
+    this.hideAllModals();
+    this.setupEventListeners();
+    this.checkLoginStatus();
+    this.updateAdminUI();
+  }
+
+  hideAllModals() {
     if (this.loginModal) {
       this.loginModal.style.display = 'none';
     }
     if (this.adminModal) {
       this.adminModal.style.display = 'none';
     }
-
-    this.init();
-  }
-
-  init() {
-    this.setupEventListeners();
-    this.checkLoginStatus();
-    this.updateAdminUI();
+    // Ensure body scrolling is ALWAYS enabled
+    document.body.style.overflow = 'auto';
+    document.body.style.position = 'static';
   }
 
   setupEventListeners() {
@@ -48,22 +55,33 @@ class AuthManager {
     if (this.adminToggle) {
       this.adminToggle.addEventListener('click', (e) => {
         e.preventDefault();
+        e.stopPropagation();
         this.openAdminPanel();
       });
     }
 
     if (this.closeLoginModal) {
-      this.closeLoginModal.addEventListener('click', () => this.closeLogin());
+      this.closeLoginModal.addEventListener('click', (e) => {
+        e.preventDefault();
+        this.closeLogin();
+      });
     }
 
     if (this.closeAdminModal) {
-      this.closeAdminModal.addEventListener('click', () => this.closeAdmin());
+      this.closeAdminModal.addEventListener('click', (e) => {
+        e.preventDefault();
+        this.closeAdmin();
+      });
     }
 
     if (this.adminLogout) {
-      this.adminLogout.addEventListener('click', () => this.logout());
+      this.adminLogout.addEventListener('click', (e) => {
+        e.preventDefault();
+        this.logout();
+      });
     }
 
+    // Close modal when clicking outside
     if (this.loginModal) {
       this.loginModal.addEventListener('click', (e) => {
         if (e.target === this.loginModal) {
@@ -80,8 +98,17 @@ class AuthManager {
       });
     }
 
+    // Tab switching in admin panel
     document.querySelectorAll('.admin-tab-btn').forEach((btn) => {
       btn.addEventListener('click', (e) => this.switchAdminTab(e));
+    });
+
+    // ESC key to close modals
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        this.closeLogin();
+        this.closeAdmin();
+      }
     });
   }
 
@@ -112,8 +139,8 @@ class AuthManager {
         setTimeout(() => {
           this.openAdmin();
           this.updateAdminUI();
-        }, 300);
-      }, 500);
+        }, 200);
+      }, 300);
 
     } else {
       this.showNotification('✗ Invalid email or password.', 'error');
@@ -125,7 +152,10 @@ class AuthManager {
     const user = localStorage.getItem('currentUser');
     if (user) {
       try {
-        this.currentUser = JSON.parse(user);
+        const parsed = JSON.parse(user);
+        if (parsed.role === 'admin') {
+          this.currentUser = parsed;
+        }
       } catch (e) {
         localStorage.removeItem('currentUser');
         this.currentUser = null;
@@ -144,7 +174,16 @@ class AuthManager {
   openLogin() {
     if (this.loginModal) {
       this.loginModal.style.display = 'flex';
-      document.body.style.overflow = 'hidden';
+      // NO SCROLL LOCK - body can scroll
+      this.loginModal.style.overflowY = 'auto';
+      document.body.style.overflow = 'auto';
+      document.body.style.position = 'static';
+      
+      // Focus on first input
+      setTimeout(() => {
+        const firstInput = this.loginModal.querySelector('input');
+        if (firstInput) firstInput.focus();
+      }, 100);
     }
   }
 
@@ -152,13 +191,17 @@ class AuthManager {
     if (this.loginModal) {
       this.loginModal.style.display = 'none';
       document.body.style.overflow = 'auto';
+      document.body.style.position = 'static';
     }
   }
 
   openAdmin() {
     if (this.adminModal) {
       this.adminModal.style.display = 'flex';
-      document.body.style.overflow = 'hidden';
+      // NO SCROLL LOCK - body can scroll
+      this.adminModal.style.overflowY = 'auto';
+      document.body.style.overflow = 'auto';
+      document.body.style.position = 'static';
     }
   }
 
@@ -166,6 +209,7 @@ class AuthManager {
     if (this.adminModal) {
       this.adminModal.style.display = 'none';
       document.body.style.overflow = 'auto';
+      document.body.style.position = 'static';
     }
   }
 
@@ -178,6 +222,8 @@ class AuthManager {
     if (this.loginForm) {
       this.loginForm.reset();
     }
+    
+    this.updateAdminUI();
   }
 
   switchAdminTab(e) {
@@ -198,10 +244,15 @@ class AuthManager {
     if (activeContent) {
       activeContent.classList.add('active');
     }
+    
+    // Load recruitment applications if switching to recruitment tab
+    if (tabName === 'recruitment' && window.enhancedAdminPanel) {
+      window.enhancedAdminPanel.loadApplications();
+    }
   }
 
   updateAdminUI() {
-    if (this.currentUser) {
+    if (this.currentUser && this.currentUser.role === 'admin') {
       const userInfo = document.getElementById('adminUserInfo');
       if (userInfo) {
         userInfo.textContent = `👤 ${this.currentUser.email}`;
@@ -227,19 +278,22 @@ class AuthManager {
       color: white;
       border-radius: 0.5rem;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      z-index: 10001;
+      z-index: 10002;
       animation: slideInDown 0.4s ease-out;
       font-weight: 500;
+      max-width: 350px;
     `;
 
     document.body.appendChild(notification);
 
     setTimeout(() => {
-      notification.remove();
+      notification.style.animation = 'slideInUp 0.4s ease-out reverse';
+      setTimeout(() => notification.remove(), 400);
     }, 3000);
   }
 }
 
+// Initialize on DOM ready
 document.addEventListener('DOMContentLoaded', () => {
   new AuthManager();
 });
