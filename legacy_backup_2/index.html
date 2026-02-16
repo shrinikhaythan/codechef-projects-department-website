@@ -1,0 +1,1334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- SEO Optimization -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="CodeChef Projects Department - VIT Chennai Chapter. Building real-world applications, research-driven solutions, and collaborative software systems.">
+  <meta name="keywords" content="CodeChef, Projects, VIT Chennai, Software Development, Research, Game Development, Hackathons">
+  <meta name="author" content="CodeChef Projects Department">
+  <meta name="theme-color" content="#ff6b35">
+  <meta property="og:title" content="CodeChef Projects Department - VIT Chennai">
+  <meta property="og:description" content="Join our talented team of developers, designers, and innovators">
+  <meta property="og:url" content="https://codechef-projects.vercel.app">
+  <link rel="canonical" href="https://codechef-projects.vercel.app">
+  
+  <title>CodeChef Projects Department | VIT Chennai - Software Development & Research</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/cursor.css">
+  <link rel="stylesheet" href="css/hero-animations.css">
+  <link rel="icon" type="image/svg+xml" href="assets/cc.svg">
+  <style>
+    /* HIDE MODALS BY DEFAULT */
+    #loginModal {
+      display: none;
+    }
+
+    #adminModal {
+      display: none;
+    }
+
+    #userLoginModal {
+      display: none;
+    }
+
+    #userSignupModal {
+      display: none;
+    }
+
+    /* Password field with eye icon */
+    .password-field {
+      position: relative;
+      display: flex;
+      align-items: center;
+      width: 100%;
+    }
+
+    .password-field input {
+      flex: 1;
+      padding-right: 45px !important;
+      width: 100%;
+    }
+
+    .toggle-password-btn {
+      position: absolute;
+      right: 12px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 5px;
+      height: 30px;
+      width: 30px;
+      transition: color var(--transition-base);
+      z-index: 10;
+    }
+
+    .toggle-password-btn:hover {
+      color: var(--accent-primary);
+    }
+
+    .toggle-password-btn svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .toggle-password-btn .eye-icon,
+    .toggle-password-btn .eye-off-icon {
+      transition: opacity 0.2s;
+    }
+
+    /* NAVBAR LOGO CONSISTENT SIZE */
+    .navbar-logo .logo-img {
+      height: 60px;
+      width: auto;
+      display: inline-block;
+    }
+    .footer-logo-img {
+      height: 72px;
+      width: auto;
+      display: inline-block;
+    }
+
+    /* Smaller login/admin modal boxes and visible close X */
+    .login-box {
+      max-width: 420px;
+      width: 100%;
+      margin: 1.5rem;
+    }
+
+    .admin-modal-content {
+      max-width: 1100px;
+      width: 95%;
+      margin: 1.25rem;
+    }
+
+    .modal .close-modal {
+      background: transparent;
+      border: none;
+      font-size: 1.25rem;
+      color: var(--text-secondary);
+      cursor: pointer;
+      position: absolute;
+      right: 18px;
+      top: 14px;
+    }
+
+    /* Center leaderboard content */
+    #questDisplay { text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    #questDisplay .leaderboard-table { margin: 0 auto; width: 100%; }
+
+    /* leaderboard responsive table - Large and centered */
+    .leaderboard-table { display: block; margin: 0 auto; max-width: 1600px; width: 99%; padding: 4rem 3rem; }
+    .leaderboard-table table { width: 100%; border-collapse: collapse; font-size: 1.35rem; }
+    .leaderboard-table td, .leaderboard-table th { padding: 1.75rem 2.5rem; font-weight: 600; letter-spacing: 0.3px; }
+    .leaderboard-table th { background-color: var(--bg-secondary); color: var(--accent-primary); text-transform: uppercase; font-size: 1.15rem; }
+
+    /* Code typing output */
+    .code-card { position: relative; padding: 1rem; min-height: 180px; background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent); border-radius: 12px; border: 1px solid rgba(255,255,255,0.03); }
+    .code-output { font-family: 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', monospace; color: #9ae6b4; font-size: 14px; line-height: 1.6; white-space: pre; margin: 0; }
+    .typing-cursor { position: absolute; left: 12px; top: 12px; color: var(--accent-primary); font-weight: 700; animation: blink 1s steps(2,start) infinite; pointer-events: none; }
+    .caret-anchor { display:inline-block; width:0; height:1em; }
+
+    @keyframes blink { 0% { opacity: 1 } 50% { opacity: 0 } 100% { opacity: 1 } }
+
+	/* Footer Styles */
+.footer {
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border-color);
+  padding: var(--spacing-3xl) 0 var(--spacing-xl);
+  margin-top: var(--spacing-3xl);
+}
+
+.footer-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-lg);
+}
+
+.footer-top {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1.5fr;
+  gap: var(--spacing-3xl);
+  margin-bottom: var(--spacing-2xl);
+}
+
+.footer-brand {
+  max-width: 350px;
+}
+
+.footer-logo {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+.footer-logo-img {
+  height: 72px;
+  width: auto;
+}
+
+.footer-logo-text {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.footer-description {
+  color: var(--text-secondary);
+  line-height: 1.7;
+  margin-bottom: var(--spacing-lg);
+}
+
+.footer-social {
+  display: flex;
+  gap: var(--spacing-md);
+}
+
+.social-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+  transition: all var(--transition-base);
+  border: 1px solid var(--border-color);
+}
+
+.social-link:hover {
+  background: var(--accent-primary);
+  color: white;
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+}
+
+.footer-heading {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-lg);
+}
+
+.footer-links,
+.footer-contact {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-links li,
+.footer-contact li {
+  margin-bottom: var(--spacing-md);
+}
+
+.footer-links a,
+.footer-contact a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: all var(--transition-base);
+  display: inline-block;
+}
+
+.footer-links a:hover,
+.footer-contact a:hover {
+  color: var(--accent-primary);
+  transform: translateX(4px);
+}
+
+.footer-contact li {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  color: var(--text-secondary);
+}
+
+.footer-contact svg {
+  flex-shrink: 0;
+}
+
+.footer-bottom {
+  padding-top: var(--spacing-xl);
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+}
+
+.footer-copyright {
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.footer-bottom-links {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  font-size: var(--font-size-sm);
+}
+
+.footer-bottom-links a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: all var(--transition-base);
+}
+
+.footer-bottom-links a:hover {
+  color: var(--accent-primary);
+}
+
+.footer-bottom-links .separator {
+  color: var(--border-color);
+}
+
+/* Responsive Footer */
+@media (max-width: 1024px) {
+  .footer-top {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-2xl);
+  }
+}
+
+@media (max-width: 640px) {
+  .footer-top {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-xl);
+  }
+
+  .footer-bottom {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .footer-brand {
+    max-width: 100%;
+  }
+}
+  </style>
+</head>
+
+<body>
+  <!-- Custom Cursor -->
+  <div class="cursor">
+    <div class="cursor-arrow"></div>
+  </div>
+  <div class="cursor-dot"></div>
+
+  <div class="app">
+    <!-- STICKY NAVIGATION BAR -->
+    <nav class="navbar" id="navbar">
+      <div class="navbar-container">
+        <!-- Logo -->
+        <a href="index.html" class="navbar-logo" title="CodeChef Projects Department">
+          <img src="assets/cc.svg" alt="CodeChef Logo" class="logo-img" style="height: 60px; width: auto;" loading="lazy">
+          <span class="logo-text">Projects</span>
+        </a>
+
+        <!-- Desktop Navigation Menu -->
+        <div class="nav-menu" id="navMenu">
+          <a href="#home" class="nav-link active" data-section="home">Home</a>
+          <a href="#about" class="nav-link" data-section="about">About</a>
+          <a href="#people" class="nav-link" data-section="people">People</a>
+          <a href="#events" class="nav-link" data-section="events">Events</a>
+          <a href="#projects" class="nav-link" data-section="projects">Projects</a>
+          <a href="#research" class="nav-link" data-section="research">Research</a>
+          <a href="#achievements" class="nav-link" data-section="achievements">Achievements</a>
+          <a href="#gamedev" class="nav-link" data-section="gamedev">Game Dev</a>
+          <a href="#quest" class="nav-link" data-section="quest">Quest System</a>
+          <a href="https://codechefvitcc.vercel.app/" class="nav-link" target="_blank" rel="noopener noreferrer">
+			Main Club ↗
+		  </a>
+        </div>
+
+        <!-- Right Controls -->
+        <div class="nav-controls">
+          <button class="theme-toggle" id="themeToggle" title="Toggle Dark/Light Mode" aria-label="Theme Toggle">
+            <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <circle cx="12" cy="12" r="5"></circle>
+              <line x1="12" y1="1" x2="12" y2="3"></line>
+              <line x1="12" y1="21" x2="12" y2="23"></line>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+              <line x1="1" y1="12" x2="3" y2="12"></line>
+              <line x1="21" y1="12" x2="23" y2="12"></line>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+            <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+          </button>
+         <div style="display:flex; align-items:center; gap:10px;">
+
+  <button id="userLoginBtn" class="btn btn-secondary">👤 User Login</button>
+
+  <button id="userLogoutBtn" class="btn btn-danger" style="display:none;">Logout</button>
+
+  <span id="userProfile" style="color: var(--text-primary); font-weight:500;"></span>
+
+  <button class="btn btn-danger" id="adminLogoutBtn" style="display:none;" onclick="document.getElementById('adminModal').style.display='none'; document.getElementById('adminLogout').click();">🔓 Logout</button>
+
+  <button class="btn btn-primary" id="loginBtn">
+    <span id="adminStatusIcon">🔒</span> Admin
+  </button>
+
+</div>
+
+        </div>
+
+        <!-- Mobile Menu Toggle -->
+        <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle Mobile Menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+      <!-- HERO SECTION -->
+      <section class="hero" id="home">
+        <div class="hero-background">
+          <div class="gradient-blob blob-1"></div>
+          <div class="gradient-blob blob-2"></div>
+          <div class="gradient-blob blob-3"></div>
+        </div>
+        
+        <div class="hero-content">
+          <div class="hero-text">
+            <h1 class="hero-title">
+              <span class="text-animate word-1">Welcome to</span>
+              <span class="text-animate word-2 highlight">Projects Department</span>
+            </h1>
+            <p class="hero-subtitle">
+              Building real-world applications, research-driven solutions, and collaborative software systems
+            </p>
+            <div class="hero-stats">
+              <div class="stat-item">
+                <span class="stat-number">50+</span>
+                <span class="stat-label">Members</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-number">20+</span>
+                <span class="stat-label">Projects</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-number">10+</span>
+                <span class="stat-label">Research Papers</span>
+              </div>
+            </div>
+            <div class="hero-buttons">
+              <a id="joinTeamBtn" href="recruitment.html" class="btn btn-primary btn-lg">Join Our Team</a>
+              <a href="#projects" class="btn btn-secondary btn-lg">Explore Projects</a>
+            </div>
+          </div>
+          
+          <div class="hero-visual">
+            <div class="code-card animate-float">
+              <pre class="code-output" aria-hidden="false"></pre>
+              <span class="typing-cursor" aria-hidden="true">▍</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="scroll-indicator">
+          <span>Scroll to explore</span>
+          <div class="mouse-scroll">
+            <div class="scroll-wheel"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ABOUT SECTION -->
+      <section class="section" id="about">
+        <div class="section-header">
+          <h2 class="section-title">About Projects Department</h2>
+          <p class="section-subtitle">We build real-world applications, conduct research, and mentor students to ship impactful software.</p>
+        </div>
+        <div class="card" style="padding:1.25rem; max-width:1100px; margin:0 auto 2rem;">
+          <p style="color:var(--text-secondary); line-height:1.8;">The Projects Department at CodeChef VIT Chennai focuses on collaborative, hands-on learning. We guide members through project-based workflows, industry best practices, and research opportunities. Our members contribute to open-source projects, organize workshops, and participate in cross-disciplinary initiatives that solve real problems.</p>
+        </div>
+      </section>
+
+      <!-- PEOPLE SECTION -->
+      <section class="section" id="people">
+        <div class="section-header">
+          <h2 class="section-title">Meet Our Team</h2>
+          <p class="section-subtitle">Talented developers, researchers, and innovators</p>
+        </div>
+
+        <!-- Tenure Selector -->
+        <div class="tenure-selector">
+          <button class="tenure-btn active" data-tenure="2025-26">2025-26</button>
+          <button class="tenure-btn" data-tenure="2024-25">2024-25</button>
+          <button class="tenure-btn" data-tenure="2023-24">2023-24</button>
+          <button class="tenure-btn" data-tenure="alumni">Alumni</button>
+        </div>
+
+        <!-- Category Tabs -->
+        <div class="tabs-container">
+          <button class="tab-btn active" data-group="leads">Leads</button>
+          <button class="tab-btn" data-group="members">Members</button>
+          <button class="tab-btn" data-group="mentors">Mentors</button>
+        </div>
+
+        <div id="memberDisplay" class="members-grid"></div>
+      </section>
+
+      <!-- EVENTS SECTION -->
+      <section class="section" id="events">
+        <div class="section-header">
+          <h2 class="section-title">Events</h2>
+          <p class="section-subtitle">Upcoming workshops, hackathons, and community events</p>
+        </div>
+
+        <div class="tabs-container">
+          <button class="tab-btn" data-type="all">All</button>
+          <button class="tab-btn active" data-type="upcoming">Upcoming</button>
+          <button class="tab-btn" data-type="past">Past</button>
+        </div>
+
+        <div id="eventsDisplay" class="events-grid"></div>
+      </section>
+
+      <!-- FEATURED PROJECTS SECTION -->
+      <!--
+      <section class="section" id="featured-projects">
+        <div class="section-header">
+          <h2 class="section-title">Featured Projects</h2>
+          <p class="section-subtitle">Showcasing our latest innovations</p>
+        </div>
+
+        <div id="featuredDisplay" class="projects-grid"></div>
+      </section>
+    -->
+      <!-- PROJECTS SECTION -->
+      <section class="section" id="projects">
+        <div class="section-header">
+          <h2 class="section-title">Our Projects</h2>
+          <p class="section-subtitle">Real-world solutions built by our team</p>
+        </div>
+        
+        <div class="tabs-container project-filters">
+          <button class="filter-btn active" data-filter="all">All</button>
+          <button class="filter-btn" data-filter="ongoing">Ongoing</button>
+          <button class="filter-btn" data-filter="completed">Completed</button>
+        </div>
+
+        <div id="projectDisplay" class="projects-grid"></div>
+      </section>
+
+      <!-- RESEARCH SECTION -->
+      <section class="section" id="research">
+        <div class="section-header">
+          <h2 class="section-title">Research & Reviews</h2>
+          <p class="section-subtitle">Academic contributions and paper reviews</p>
+        </div>
+        <div id="researchDisplay" class="research-grid"></div>
+      </section>
+
+      <!-- ACHIEVEMENTS SECTION -->
+      <section class="section" id="achievements">
+        <div class="section-header">
+          <h2 class="section-title">Achievements & Milestones</h2>
+          <p class="section-subtitle">Celebrating our success</p>
+        </div>
+        
+        <div class="tabs-container">
+          <button class="tab-btn active" data-type="awards">Awards</button>
+          <button class="tab-btn" data-type="milestones">Milestones</button>
+          <button class="tab-btn" data-type="hackathons">Hackathons</button>
+        </div>
+
+        <div id="achievementDisplay" class="achievements-grid"></div>
+      </section>
+
+      <!-- GAME DEV SECTION -->
+      <section class="section" id="gamedev">
+        <div class="section-header">
+          <h2 class="section-title">Game Development Wing</h2>
+          <p class="section-subtitle">Creating interactive experiences</p>
+        </div>
+        
+        <div class="tabs-container">
+          <button class="tab-btn active" data-type="members">Members</button>
+          <button class="tab-btn" data-type="projects">Projects</button>
+          <button class="tab-btn" data-type="tools">Tools</button>
+          <button class="tab-btn" data-type="events">Events</button>
+        </div>
+
+        <div id="gamedevDisplay" class="gamedev-grid"></div>
+      </section>
+
+      <!-- QUEST SYSTEM SECTION -->
+      <section class="section" id="quest">
+        <div class="section-header">
+          <h2 class="section-title">Internal Quest System</h2>
+          <p class="section-subtitle">Gamified contribution tracking</p>
+        </div>
+        
+        <div class="tabs-container">
+          <button class="tab-btn active" data-type="leaderboard">Leaderboard</button>
+          <button class="tab-btn" data-type="contributions">Contributions</button>
+          <button class="tab-btn" data-type="winners">Winners</button>
+        </div>
+
+        <div id="questDisplay" class="quest-content"></div>
+      </section>
+      <!--
+      <p>24BCE5021 - V.P.Shrinikhaythan</p>
+      <br>
+      <p> 24BCE5362 - Balashanmugam K</p>
+      -->
+      <!-- FOOTER -->
+<!-- ============================================
+     PROFESSIONAL FOOTER WITH SOCIAL MEDIA
+     ============================================ -->
+    
+
+<footer class="footer">
+  <div class="footer-container">
+    <div class="footer-top">
+      <div class="footer-column footer-brand">
+        <div class="footer-logo">
+          <img src="assets/cc.svg" alt="CodeChef Logo" class="footer-logo-img">
+          <span class="footer-logo-text">Projects Department</span>
+        </div>
+        <p class="footer-description">
+          Building innovative solutions, conducting research, and fostering a collaborative
+          environment for aspiring developers and tech enthusiasts.
+        </p>
+        <div class="footer-social">
+          <a href="https://www.linkedin.com/company/codechef-vit-chapter" target="_blank" rel="noopener noreferrer" 
+             class="social-link" aria-label="LinkedIn" title="LinkedIn">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+              <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+            </svg>
+          </a>
+          <a href="https://twitter.com/codechefvit" target="_blank" rel="noopener noreferrer" 
+             class="social-link" aria-label="Twitter" title="Twitter">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+            </svg>
+          </a>
+          <a href="https://www.instagram.com/codechefvit" target="_blank" rel="noopener noreferrer" 
+             class="social-link" aria-label="Instagram" title="Instagram">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+              <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+            </svg>
+          </a>
+          <a href="https://discord.gg/codechefvit" target="_blank" rel="noopener noreferrer" 
+             class="social-link" aria-label="Discord" title="Discord">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+              <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="footer-column">
+        <h3 class="footer-heading">Quick Links</h3>
+        <ul class="footer-links">
+          <li><a href="#home">Home</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#people">Our Team</a></li>
+          <li><a href="#events">Events</a></li>
+          <li><a href="#projects">Projects</a></li>
+          <li><a href="#research">Research</a></li>
+          <li><a href="#achievements">Achievements</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-column">
+        <h3 class="footer-heading">Resources</h3>
+        <ul class="footer-links">
+          <li><a href="https://codechefvitcc.vercel.app/" target="_blank" rel="noopener noreferrer">Main Club ↗</a></li>
+          <li><a href="recruitment.html">Join Us</a></li>
+          <li><a href="#gamedev">Game Dev Wing</a></li>
+          <li><a href="#quest">Quest System</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-column">
+        <h3 class="footer-heading">Contact</h3>
+        <ul class="footer-contact">
+          <li>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="16" height="16">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+            </svg>
+            <a href="mailto:codechef@vit.ac.in">codechef@vit.ac.in</a>
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="16" height="16">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+            </svg>
+            <a href="https://maps.app.goo.gl/ZUfAeCbCdkDdDFLf8" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: none;">VIT University Chennai Campus, Vandalur-Kelambakkam Road, Chennai-600127, Tamil Nadu</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p class="footer-copyright">
+        © <span id="currentYear">2025</span> CodeChef VIT Chennai - Projects Department. All rights reserved.
+      </p>
+      <div class="footer-bottom-links">
+        <a href="#">Privacy Policy</a>
+        <span class="separator">•</span>
+        <a href="#">Terms of Service</a>
+        <span class="separator">•</span>
+        <a href="https://codechefvitcc.vercel.app/" target="_blank" rel="noopener noreferrer">Main Club ↗</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+    </main>
+
+    <!-- USER LOGIN MODAL -->
+    <div class="modal modal-user-login" id="userLoginModal">
+      <div class="login-container">
+        <div class="login-box">
+          <button class="close-modal" onclick="document.getElementById('userLoginModal').style.display='none'">&times;</button>
+          
+          <div class="login-header">
+            <img src="assets/cc.svg" alt="CodeChef" class="login-logo">
+            <h2>User Login</h2>
+            <p>Access your profile and contributions</p>
+          </div>
+
+          <form id="userLoginForm" class="login-form">
+            <div class="form-group">
+              <label for="userEmail">Email</label>
+              <input type="email" id="userEmail" name="email" placeholder="your@email.com" required>
+            </div>
+            <div class="form-group">
+              <label for="userPassword">Password</label>
+              <div class="password-field">
+                <input type="password" id="userPassword" name="password" placeholder="••••••••" required>
+                <button type="button" class="toggle-password-btn" onclick="togglePassword(event, 'userPassword')">
+                  <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                  <svg class="eye-off-icon" style="display: none;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                    <line x1="1" y1="1" x2="23" y2="23"></line>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Login</button>
+            <div class="login-note-container">
+              <p class="login-note">
+                Don't have an account? <a href="#" id="toggleSignup" style="color: var(--accent-primary); text-decoration: none;">Sign up here</a>
+              </p>
+              <p class="login-note">
+                <a href="#" id="forgotPasswordLink" style="color: var(--accent-primary); text-decoration: none;">Forgot password?</a>
+              </p>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- USER SIGNUP MODAL -->
+    <div class="modal modal-user-signup" id="userSignupModal">
+      <div class="login-container">
+        <div class="login-box">
+          <button class="close-modal" onclick="document.getElementById('userSignupModal').style.display='none'">&times;</button>
+          
+          <div class="login-header">
+            <img src="assets/cc.svg" alt="CodeChef" class="login-logo">
+            <h2>Create Account</h2>
+            <p>Join the CodeChef Community</p>
+          </div>
+
+          <form id="userSignupForm" class="login-form">
+            <div class="form-group">
+              <label for="signupName">Full Name</label>
+              <input type="text" id="signupName" name="name" placeholder="John Doe" required>
+            </div>
+            <div class="form-group">
+              <label for="signupEmail">Email</label>
+              <input type="email" id="signupEmail" name="email" placeholder="your@email.com" required>
+            </div>
+            <div class="form-group">
+              <label for="signupPassword">Password</label>
+              <div class="password-field">
+                <input type="password" id="signupPassword" name="password" placeholder="••••••••" required>
+                <button type="button" class="toggle-password-btn" onclick="togglePassword(event, 'signupPassword')">
+                  <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                  <svg class="eye-off-icon" style="display: none;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                    <line x1="1" y1="1" x2="23" y2="23"></line>
+                  </svg>
+                </button>
+              </div>
+              <!-- Password Strength Indicator -->
+              <div id="signupPasswordStrength" class="password-strength-container" style="display: none;">
+                <div class="password-strength-text">
+                  <span class="password-strength-label">Password Strength:</span>
+                  <span id="signupPasswordStrengthValue" class="password-strength-value weak">🔴 Weak</span>
+                </div>
+                <div class="password-strength-meter">
+                  <div class="password-strength-bar"></div>
+                  <div class="password-strength-bar"></div>
+                  <div class="password-strength-bar"></div>
+                  <div class="password-strength-bar"></div>
+                </div>
+                <div class="password-requirements">
+                  <div class="requirement-item unmet" id="signupReqLength">
+                    <span class="requirement-icon cross">✗</span>
+                    <span>8+ characters</span>
+                  </div>
+                  <div class="requirement-item unmet" id="signupReqUppercase">
+                    <span class="requirement-icon cross">✗</span>
+                    <span>Uppercase (A-Z)</span>
+                  </div>
+                  <div class="requirement-item unmet" id="signupReqLowercase">
+                    <span class="requirement-icon cross">✗</span>
+                    <span>Lowercase (a-z)</span>
+                  </div>
+                  <div class="requirement-item unmet" id="signupReqNumbers">
+                    <span class="requirement-icon cross">✗</span>
+                    <span>Numbers (0-9)</span>
+                  </div>
+                  <div class="requirement-item unmet" id="signupReqSpecial">
+                    <span class="requirement-icon cross">✗</span>
+                    <span>Special chars (!@#...)</span>
+                  </div>
+                </div>
+                <div id="signupPasswordFeedback" class="password-feedback hidden"></div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="confirmPassword">Confirm Password</label>
+              <div class="password-field">
+                <input type="password" id="confirmPassword" name="confirm" placeholder="••••••••" required>
+                <button type="button" class="toggle-password-btn" onclick="togglePassword(event, 'confirmPassword')">
+                  <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                  <svg class="eye-off-icon" style="display: none;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                    <line x1="1" y1="1" x2="23" y2="23"></line>
+                  </svg>
+                </button>
+              </div>
+              <!-- Password Match Status -->
+              <div id="signupPasswordMatch" class="password-match-status">
+                <span class="password-match-icon">✓</span>
+                <span>Passwords match</span>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Create Account</button>
+            <p class="login-note">
+              Already have an account? <a href="#" id="toggleLogin" style="color: var(--accent-primary); text-decoration: none;">Login here</a>
+            </p>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- FORGOT PASSWORD MODAL -->
+    <div class="modal modal-forgot-password" id="forgotPasswordModal">
+      <div class="login-container">
+        <div class="login-box">
+          <button class="close-modal" onclick="document.getElementById('forgotPasswordModal').style.display='none'">&times;</button>
+          
+          <div class="login-header">
+            <img src="assets/cc.svg" alt="CodeChef" class="login-logo">
+            <h2>Forgot Password</h2>
+            <p>Reset your account password</p>
+          </div>
+
+          <form id="forgotPasswordForm" class="login-form">
+            <div class="form-group">
+              <label for="forgotEmail">Email Address</label>
+              <input type="email" id="forgotEmail" name="email" placeholder="your@email.com" required>
+              <small style="color: var(--text-secondary); display: block; margin-top: 0.5rem;">Enter the email associated with your account</small>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Send Recovery Email</button>
+            <p class="login-note">
+              Remember your password? <a href="#" id="backToLoginForgot" style="color: var(--accent-primary); text-decoration: none;">Back to login</a>
+            </p>
+          </form>
+          
+          <div id="forgotPasswordMessage" style="display: none; margin-top: 1rem; padding: 1rem; border-radius: 0.5rem; text-align: center; color: var(--accent-success); background: rgba(16, 185, 129, 0.1);">
+            ✓ Recovery email sent! Check your inbox for password reset instructions.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LOGIN MODAL (ADMIN) -->
+    <div class="modal modal-login" id="loginModal">
+      <div class="login-container">
+        <div class="login-box">
+          <button class="close-modal" id="closeLoginModal">&times;</button>
+          
+          <div class="login-header">
+            <img src="assets/cc.svg" alt="CodeChef" class="login-logo">
+            <h2>Admin Login</h2>
+            <p>CodeChef Projects Department</p>
+          </div>
+
+          <form id="loginForm" class="login-form">
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input type="email" id="email" name="email" placeholder="admin@codechef-projects.com" required>
+            </div>
+            <div class="form-group">
+              <label for="password">Password</label>
+              <div class="password-field">
+                <input type="password" id="password" name="password" placeholder="••••••••" required>
+                <button type="button" class="toggle-password-btn" onclick="togglePassword(event, 'password')">
+                  <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                  <svg class="eye-off-icon" style="display: none;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                    <line x1="1" y1="1" x2="23" y2="23"></line>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Login</button>
+            <!--<p class="login-note">
+              Demo Credentials:<br>
+              <strong>admin@codechef-projects.com</strong><br>
+              <strong>Admin@123</strong>
+               
+            </p>
+            -->
+         
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADMIN MODAL -->
+    <div class="modal modal-admin" id="adminModal">
+      <div class="admin-modal-content">
+        <div class="admin-header">
+          <h2>Admin Dashboard</h2>
+          <div class="admin-header-controls">
+            <span class="admin-user" id="adminUserInfo"></span>
+            <button class="btn btn-danger" id="adminLogout">Logout</button>
+            <button class="close-modal" id="closeAdminModal">&times;</button>
+          </div>
+        </div>
+
+        <div class="admin-tabs-container">
+          <button class="admin-tab-btn active" data-tab="members">Members Management</button>
+          <button class="admin-tab-btn" data-tab="content">Content Management</button>
+          <button class="admin-tab-btn" data-tab="projects">Projects Management</button>
+          <button class="admin-tab-btn" data-tab="admin-accounts">Admin Accounts</button>
+          <button class="admin-tab-btn" data-tab="settings">Settings</button>
+		  <button class="admin-tab-btn" data-tab="recruitment">Recruitment</button>
+        </div>
+
+        <div class="admin-content" id="adminContent">
+          <!-- Members Tab -->
+          <div class="admin-tab-content active" data-tab="members">
+            <div class="admin-section">
+              <h3>Add New Member</h3>
+              <form id="addMemberForm" class="admin-form">
+                <input type="text" placeholder="Name" name="name" required>
+                <input type="email" placeholder="Email" name="email" required>
+                <input type="text" placeholder="Role" name="role" required>
+                <select name="group" required>
+                  <option>-- Select Group --</option>
+                  <option value="leads">Leads</option>
+                  <option value="members">Members</option>
+                  <option value="mentors">Mentors</option>
+                </select>
+                <select name="tenure" required>
+                  <option>-- Select Tenure --</option>
+                  <option value="2025-26">2025-26</option>
+                  <option value="2024-25">2024-25</option>
+                  <option value="2023-24">2023-24</option>
+                </select>
+                <input type="text" placeholder="LinkedIn URL" name="linkedin">
+                <input type="text" placeholder="GitHub URL" name="github">
+                <input type="text" placeholder="Photo URL" name="photo">
+                <button type="submit" class="btn btn-primary">Add Member</button>
+              </form>
+            </div>
+
+            <div class="admin-section">
+              <h3>Members List</h3>
+              <div id="membersList" class="admin-list"></div>
+            </div>
+          </div>
+
+          <!-- Content Tab -->
+          <div class="admin-tab-content" data-tab="content">
+            <div class="admin-section">
+              <h3>Edit Section Content</h3>
+              <form id="editContentForm" class="admin-form">
+                <select name="section" required>
+                  <option>-- Select Section --</option>
+                  <option value="hero">Hero Section</option>
+                  <option value="about">About Section</option>
+                  <option value="features">Features Section</option>
+                </select>
+                <textarea placeholder="Content" name="content" required rows="6"></textarea>
+                <button type="submit" class="btn btn-primary">Update Content</button>
+              </form>
+            </div>
+          </div>
+
+          <!-- Projects Tab -->
+          <div class="admin-tab-content" data-tab="projects">
+            <div class="admin-section">
+              <h3>Add New Project</h3>
+              <form id="addProjectForm" class="admin-form">
+                <input type="text" placeholder="Project Title" name="title" required>
+                <textarea placeholder="Description" name="description" required></textarea>
+                <input type="text" placeholder="Technologies (comma separated)" name="technologies" required>
+                <input type="text" placeholder="GitHub URL" name="github" required>
+                <input type="text" placeholder="Demo URL" name="demo">
+                <select name="status" required>
+                  <option value="ongoing">Ongoing</option>
+                  <option value="completed">Completed</option>
+                </select>
+                <button type="submit" class="btn btn-primary">Add Project</button>
+              </form>
+            </div>
+          </div>
+
+          <!-- Admin Accounts Tab -->
+          <div class="admin-tab-content" data-tab="admin-accounts">
+            <div class="admin-section">
+              <h3>Add New Admin Account</h3>
+              <p style="color: var(--text-secondary); margin-bottom: 1rem;">Create a new admin account with strong password requirements.</p>
+              <form id="addAdminForm" class="admin-form">
+                <input type="email" id="adminEmail" placeholder="admin@example.com" name="email" required>
+                <div class="form-group" style="margin-bottom: 1rem;">
+                  <label for="adminPassword">Password</label>
+                  <div class="password-field" style="margin-bottom: 0;">
+                    <input type="password" id="adminPassword" name="password" placeholder="••••••••" required>
+                    <button type="button" class="toggle-password-btn" onclick="togglePassword(event, 'adminPassword')">
+                      <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                      </svg>
+                      <svg class="eye-off-icon" style="display: none;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                        <line x1="1" y1="1" x2="23" y2="23"></line>
+                      </svg>
+                    </button>
+                  </div>
+                  <!-- Password Strength Indicator for Admin -->
+                  <div id="adminPasswordStrength" class="password-strength-container" style="display: none;">
+                    <div class="password-strength-text">
+                      <span class="password-strength-label">Password Strength:</span>
+                      <span id="adminPasswordStrengthValue" class="password-strength-value weak">🔴 Weak</span>
+                    </div>
+                    <div class="password-strength-meter">
+                      <div class="password-strength-bar"></div>
+                      <div class="password-strength-bar"></div>
+                      <div class="password-strength-bar"></div>
+                      <div class="password-strength-bar"></div>
+                    </div>
+                    <div class="password-requirements">
+                      <div class="requirement-item unmet" id="adminReqLength">
+                        <span class="requirement-icon cross">✗</span>
+                        <span>8+ characters</span>
+                      </div>
+                      <div class="requirement-item unmet" id="adminReqUppercase">
+                        <span class="requirement-icon cross">✗</span>
+                        <span>Uppercase (A-Z)</span>
+                      </div>
+                      <div class="requirement-item unmet" id="adminReqLowercase">
+                        <span class="requirement-icon cross">✗</span>
+                        <span>Lowercase (a-z)</span>
+                      </div>
+                      <div class="requirement-item unmet" id="adminReqNumbers">
+                        <span class="requirement-icon cross">✗</span>
+                        <span>Numbers (0-9)</span>
+                      </div>
+                      <div class="requirement-item unmet" id="adminReqSpecial">
+                        <span class="requirement-icon cross">✗</span>
+                        <span>Special chars (!@#...)</span>
+                      </div>
+                    </div>
+                    <div id="adminPasswordFeedback" class="password-feedback hidden"></div>
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Create Admin Account</button>
+              </form>
+            </div>
+
+            <div class="admin-section">
+              <h3>Existing Admin Accounts</h3>
+              <div id="adminAccountsList" class="admin-list"></div>
+            </div>
+          </div>
+
+          <!-- Settings Tab -->
+          <div class="admin-tab-content" data-tab="settings">
+            <div class="admin-section">
+              <h3>Change Admin Password</h3>
+              <p style="color: var(--text-secondary); margin-bottom: 1rem;">Update your admin account password. Choose a strong password with at least 8 characters.</p>
+              <form id="changeAdminPasswordForm" class="admin-form" style="max-width: 500px;">
+                <div class="form-group">
+                  <label for="currentAdminPassword">Current Password</label>
+                  <div class="password-field">
+                    <input type="password" id="currentAdminPassword" name="currentPassword" placeholder="••••••••" required>
+                    <button type="button" class="toggle-password-btn" onclick="togglePassword(event, 'currentAdminPassword')">
+                      <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                      </svg>
+                      <svg class="eye-off-icon" style="display: none;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                        <line x1="1" y1="1" x2="23" y2="23"></line>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="newAdminPassword">New Password</label>
+                  <div class="password-field">
+                    <input type="password" id="newAdminPassword" name="newPassword" placeholder="••••••••" required>
+                    <button type="button" class="toggle-password-btn" onclick="togglePassword(event, 'newAdminPassword')">
+                      <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                      </svg>
+                      <svg class="eye-off-icon" style="display: none;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                        <line x1="1" y1="1" x2="23" y2="23"></line>
+                      </svg>
+                    </button>
+                  </div>
+                  <!-- Password Strength Indicator for Password Change -->
+                  <div id="changePasswordStrength" class="password-strength-container" style="display: none;">
+                    <div class="password-strength-text">
+                      <span class="password-strength-label">Password Strength:</span>
+                      <span id="changePasswordStrengthValue" class="password-strength-value weak">🔴 Weak</span>
+                    </div>
+                    <div class="password-strength-meter">
+                      <div class="password-strength-bar"></div>
+                      <div class="password-strength-bar"></div>
+                      <div class="password-strength-bar"></div>
+                      <div class="password-strength-bar"></div>
+                    </div>
+                    <div class="password-requirements">
+                      <div class="requirement-item unmet" id="changeReqLength">
+                        <span class="requirement-icon cross">✗</span>
+                        <span>8+ characters</span>
+                      </div>
+                      <div class="requirement-item unmet" id="changeReqUppercase">
+                        <span class="requirement-icon cross">✗</span>
+                        <span>Uppercase (A-Z)</span>
+                      </div>
+                      <div class="requirement-item unmet" id="changeReqLowercase">
+                        <span class="requirement-icon cross">✗</span>
+                        <span>Lowercase (a-z)</span>
+                      </div>
+                      <div class="requirement-item unmet" id="changeReqNumbers">
+                        <span class="requirement-icon cross">✗</span>
+                        <span>Numbers (0-9)</span>
+                      </div>
+                      <div class="requirement-item unmet" id="changeReqSpecial">
+                        <span class="requirement-icon cross">✗</span>
+                        <span>Special chars (!@#...)</span>
+                      </div>
+                    </div>
+                    <div id="changePasswordFeedback" class="password-feedback hidden"></div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="confirmNewAdminPassword">Confirm New Password</label>
+                  <div class="password-field">
+                    <input type="password" id="confirmNewAdminPassword" name="confirmPassword" placeholder="••••••••" required>
+                    <button type="button" class="toggle-password-btn" onclick="togglePassword(event, 'confirmNewAdminPassword')">
+                      <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                      </svg>
+                      <svg class="eye-off-icon" style="display: none;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                        <line x1="1" y1="1" x2="23" y2="23"></line>
+                      </svg>
+                    </button>
+                  </div>
+                  <div id="changePasswordMatch" class="password-match-status">
+                    <span class="password-match-icon">✓</span>
+                    <span>Passwords match</span>
+                  </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Update Password</button>
+              </form>
+            </div>
+          </div>
+
+          <!-- Recruitment Tab -->
+          <div class="admin-tab-content" data-tab="recruitment">
+            <div class="admin-section">
+              <h3>Recruitment Applications</h3>
+              <div id="interviewSlotsManager" style="margin-bottom: 1rem; background: var(--bg-tertiary); padding: 1rem; border-radius: var(--radius-lg); border: 1px solid var(--border-color);">
+                <h4 style="margin-top:0; color: var(--text-primary);">Interview Slots Manager</h4>
+                <p style="color: var(--text-secondary); margin: 0 0 0.75rem 0;">Add available interview dates and times. Applicants will be able to book from these slots.</p>
+                <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+                  <input type="date" id="slotDate" style="padding:0.5rem; border-radius:6px; border:1px solid var(--border-color);">
+                  <input type="time" id="slotTime" style="padding:0.5rem; border-radius:6px; border:1px solid var(--border-color);">
+                  <button class="btn btn-primary" id="addInterviewSlotBtn">Add Slot</button>
+                </div>
+                <div id="slotsList" style="margin-top:0.75rem; color: var(--text-secondary);"></div>
+              </div>
+
+              <div id="applicationsList"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toggle Password Visibility Function -->
+  <script>
+    function togglePassword(event, inputId) {
+      event.preventDefault();
+      const input = document.getElementById(inputId);
+      const button = event.currentTarget;
+      const eyeIcon = button.querySelector('.eye-icon');
+      const eyeOffIcon = button.querySelector('.eye-off-icon');
+
+      if (input.type === 'password') {
+        input.type = 'text';
+        eyeIcon.style.display = 'none';
+        eyeOffIcon.style.display = 'block';
+      } else {
+        input.type = 'password';
+        eyeIcon.style.display = 'block';
+        eyeOffIcon.style.display = 'none';
+      }
+    }
+    
+    // Team members modal
+    function showTeamMembers(teamName, members) {
+      const modal = document.createElement('div');
+      modal.id = 'teamMembersModal';
+      modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9998;
+      `;
+      
+      const modalContent = document.createElement('div');
+      modalContent.style.cssText = `
+        background: var(--bg-primary);
+        padding: 2rem;
+        border-radius: 12px;
+        max-width: 500px;
+        width: 90%;
+        max-height: 70vh;
+        overflow-y: auto;
+        position: relative;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+      `;
+      
+      const closeBtn = document.createElement('button');
+      closeBtn.innerHTML = '&times;';
+      closeBtn.style.cssText = `
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        background: none;
+        border: none;
+        font-size: 30px;
+        cursor: pointer;
+        color: var(--text-secondary);
+      `;
+      closeBtn.onclick = () => modal.remove();
+      
+      modalContent.appendChild(closeBtn);
+      
+      const title = document.createElement('h2');
+      title.textContent = teamName;
+      title.style.color = 'var(--text-primary)';
+      title.style.marginTop = '0';
+      modalContent.appendChild(title);
+      
+      const membersList = document.createElement('div');
+      membersList.style.cssText = 'margin-top: 1.5rem;';
+      
+      members.forEach((member, idx) => {
+        const memberDiv = document.createElement('div');
+        memberDiv.style.cssText = `
+          padding: 1rem;
+          background: var(--bg-secondary);
+          border-radius: 8px;
+          margin-bottom: 0.75rem;
+          border-left: 4px solid var(--accent-primary);
+        `;
+        memberDiv.innerHTML = `
+          <strong style="color: var(--text-primary);">${member}</strong><br>
+          <small style="color: var(--text-secondary);">Team Member #${idx + 1}</small>
+        `;
+        membersList.appendChild(memberDiv);
+      });
+      
+      modalContent.appendChild(membersList);
+      modal.appendChild(modalContent);
+      document.body.appendChild(modal);
+      
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) modal.remove();
+      });
+    }
+  </script>
+
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/cursor.js"></script>
+  <script src="js/animations.js"></script>
+  <script src="js/password-validator.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/user-auth.js"></script>
+  <script src="js/admin.js"></script>
+  <script src="js/main.js"></script>
+  
+  <!-- Auto-update copyright year -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const currentYearEl = document.getElementById('currentYear');
+      if (currentYearEl) {
+        currentYearEl.textContent = new Date().getFullYear();
+      }
+    });
+  </script>
+  
+</body>
+</html>

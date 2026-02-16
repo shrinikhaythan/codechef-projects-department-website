@@ -1,0 +1,195 @@
+/* ============================================
+   ADMIN DASHBOARD STYLES - LEGACY PORT
+   ============================================ */
+
+.modal-admin {
+    display: none;
+}
+
+.modal-admin.active {
+    display: flex;
+}
+
+.admin-modal-content {
+    width: 90%;
+    max-width: 1000px;
+    background: var(--bg-primary);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-xl);
+    max-height: 85vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    animation: modalIn 0.4s ease-out;
+}
+
+.admin-modal-content::-webkit-scrollbar {
+    width: 0 !important;
+    display: none !important;
+}
+
+.admin-modal-content::-webkit-scrollbar-track {
+    display: none !important;
+}
+
+.admin-modal-content::-webkit-scrollbar-thumb {
+    display: none !important;
+}
+
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-xl);
+    border-bottom: 2px solid var(--border-color);
+    background: linear-gradient(135deg, var(--accent-primary-light) 0%, transparent 100%);
+}
+
+.admin-header h2 {
+    margin: 0;
+    color: var(--text-primary);
+}
+
+.admin-header-controls {
+    display: flex;
+    gap: var(--spacing-lg);
+    align-items: center;
+}
+
+.admin-user {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+}
+
+.admin-tabs-container {
+    display: flex;
+    gap: var(--spacing-md);
+    padding: var(--spacing-lg);
+    border-bottom: 2px solid var(--border-color);
+    overflow-x: auto;
+}
+
+.admin-tab-btn {
+    padding: var(--spacing-md) var(--spacing-lg);
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+    transition: all var(--transition-base);
+    border-bottom: 3px solid transparent;
+    position: relative;
+}
+
+.admin-tab-btn:hover {
+    color: var(--text-primary);
+    border-bottom-color: var(--accent-primary);
+}
+
+.admin-tab-btn.active {
+    color: var(--accent-primary);
+    border-bottom-color: var(--accent-primary);
+    background: var(--accent-primary-light);
+}
+
+.admin-content {
+    padding: var(--spacing-xl);
+}
+
+.admin-tab-content {
+    display: none;
+}
+
+.admin-tab-content.active {
+    display: block;
+    animation: fadeInUp 0.4s ease-out;
+}
+
+.admin-section {
+    margin-bottom: var(--spacing-2xl);
+}
+
+.admin-section h3 {
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--spacing-lg);
+    color: var(--text-primary);
+}
+
+.admin-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    background: var(--bg-secondary);
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--spacing-xl);
+}
+
+.admin-form input,
+.admin-form select,
+.admin-form textarea {
+    padding: var(--spacing-md);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: var(--font-family);
+    font-size: var(--font-size-sm);
+    transition: all var(--transition-base);
+}
+
+.admin-form input:focus,
+.admin-form select:focus,
+.admin-form textarea:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 3px var(--accent-primary-light);
+}
+
+.admin-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.member-item {
+    padding: var(--spacing-lg);
+    background: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+    border-left: 4px solid var(--accent-primary);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all var(--transition-base);
+}
+
+.member-item:hover {
+    box-shadow: var(--shadow-md);
+}
+
+/* Responsive adjustments for Admin */
+@media (max-width: 768px) {
+    .admin-modal-content {
+        width: 95%;
+        max-width: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .admin-header {
+        flex-direction: column;
+        gap: var(--spacing-lg);
+        align-items: flex-start;
+    }
+
+    .admin-header-controls {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .admin-header-controls .btn {
+        width: 100%;
+    }
+}

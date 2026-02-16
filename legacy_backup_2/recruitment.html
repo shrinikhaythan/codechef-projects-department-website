@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Join CodeChef Projects Department - Apply now for our team">
+  <meta name="keywords" content="CodeChef, Recruitment, Projects, VIT Chennai">
+  <title>Recruitment - CodeChef Projects Department | VIT Chennai</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/cursor.css">
+  <link rel="icon" type="image/svg+xml" href="assets/cc.svg">
+  <script>
+    // Check if user is logged in - show dialog immediately if not
+    (function() {
+      const currentUser = localStorage.getItem('currentUser');
+      
+      if (!currentUser) {
+        // Show dialog as soon as page loads (don't wait for DOMContentLoaded)
+        function showLoginDialog() {
+          // Create modal overlay
+          const modal = document.createElement('div');
+          modal.id = 'loginRequiredModal';
+          modal.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+          `;
+          
+          const modalContent = document.createElement('div');
+          modalContent.style.cssText = `
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            padding: 40px;
+            border-radius: 12px;
+            text-align: center;
+            max-width: 450px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            position: relative;
+          `;
+          
+          const closeBtn = document.createElement('button');
+          closeBtn.textContent = '×';
+          closeBtn.style.cssText = `
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 35px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: color 0.2s;
+          `;
+          closeBtn.onmouseover = () => closeBtn.style.color = 'var(--accent-primary)';
+          closeBtn.onmouseout = () => closeBtn.style.color = 'var(--text-secondary)';
+          closeBtn.onclick = () => {
+            modal.remove();
+          };
+          
+          modalContent.appendChild(closeBtn);
+          
+          const title = document.createElement('h2');
+          title.textContent = '🔐 Login Required';
+          title.style.cssText = 'margin-top: 0; color: var(--accent-primary); font-size: 1.5rem;';
+          modalContent.appendChild(title);
+          
+          const desc = document.createElement('p');
+          desc.textContent = 'You need to be logged in to view the recruitment form.';
+          desc.style.cssText = 'color: var(--text-secondary); margin: 15px 0; font-size: 1rem;';
+          modalContent.appendChild(desc);
+          
+          const loginLink = document.createElement('a');
+          loginLink.href = 'index.html#home';
+          loginLink.textContent = 'Go to Home & Login';
+          loginLink.style.cssText = `
+            display: inline-block;
+            background: var(--accent-primary);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 6px;
+            text-decoration: none;
+            margin-top: 15px;
+            font-weight: 600;
+            transition: opacity 0.2s;
+          `;
+          loginLink.onmouseover = () => loginLink.style.opacity = '0.9';
+          loginLink.onmouseout = () => loginLink.style.opacity = '1';
+          modalContent.appendChild(loginLink);
+          
+          modal.appendChild(modalContent);
+          document.body.appendChild(modal);
+          
+          // Blur the page content
+          const recruitmentPage = document.querySelector('.recruitment-page');
+          if (recruitmentPage) {
+            recruitmentPage.style.filter = 'blur(8px)';
+            recruitmentPage.style.pointerEvents = 'none';
+            recruitmentPage.style.transition = 'filter 0.3s ease';
+          }
+        }
+        
+        // Show dialog when DOM is ready
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', showLoginDialog);
+        } else {
+          showLoginDialog();
+        }
+      }
+    })();
+  </script>
+  <style>
+    .recruitment-page {
+      min-height: 100vh;
+      background: var(--bg-primary);
+      padding-top: var(--spacing-xl);
+    }
+
+    .recruitment-wrapper {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: var(--spacing-3xl) var(--spacing-lg);
+    }
+
+    .recruitment-header {
+      text-align: center;
+      margin-bottom: var(--spacing-lg);
+      animation: fadeInUp 0.8s ease-out;
+    }
+
+    .recruitment-header h1 {
+      font-size: var(--font-size-4xl);
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .recruitment-header p {
+      font-size: var(--font-size-lg);
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto var(--spacing-lg);
+    }
+
+    .recruitment-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--spacing-lg);
+      align-items: start;
+    }
+
+    .recruitment-info {
+      animation: slideInLeft 0.8s ease-out;
+    }
+
+    .recruitment-info h2 {
+      font-size: var(--font-size-2xl);
+      color: var(--text-primary);
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .recruitment-info p {
+      color: var(--text-secondary);
+      line-height: 1.8;
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .requirements-list {
+      list-style: none;
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .requirements-list li {
+      padding: var(--spacing-md) 0;
+      padding-left: var(--spacing-lg);
+      position: relative;
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .requirements-list li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      color: var(--accent-success);
+      font-weight: 700;
+      font-size: var(--font-size-lg);
+    }
+
+    .recruitment-form {
+	  background: var(--bg-secondary);
+	  padding: var(--spacing-2xl);
+	  border-radius: var(--radius-xl);
+	  border: 1px solid var(--border-color);
+	  animation: slideInRight 0.8s ease-out;
+	  box-shadow: var(--shadow-lg);
+	  transition: none; /* Remove all transitions */
+	}
+
+    .form-group {
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: var(--spacing-sm);
+      font-weight: 600;
+      color: var(--text-primary);
+      font-size: var(--font-size-sm);
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: var(--spacing-md);
+      border: 2px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: var(--font-family);
+      font-size: var(--font-size-sm);
+      transition: all var(--transition-base);
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 0 4px var(--accent-primary-light);
+      transform: translateY(-2px);
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 120px;
+      font-family: var(--font-family);
+    }
+
+    .form-group input[type="submit"] {
+      background: var(--gradient-primary);
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      padding: var(--spacing-lg);
+      transition: all var(--transition-base);
+      box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+    }
+
+    .form-group input[type="submit"]:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
+    }
+
+    .form-group input[type="submit"]:active {
+      transform: translateY(0);
+    }
+
+    .note-box {
+      background: var(--accent-primary-light);
+      border-left: 4px solid var(--accent-primary);
+      padding: var(--spacing-lg);
+      border-radius: var(--radius-lg);
+      color: var(--text-secondary);
+      margin-top: var(--spacing-2xl);
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      color: var(--accent-primary);
+      text-decoration: none;
+      font-weight: 600;
+      margin-bottom: var(--spacing-2xl);
+      transition: all var(--transition-base);
+    }
+
+    .back-link:hover {
+      transform: translateX(-4px);
+    }
+
+    @media (max-width: 768px) {
+      .recruitment-container {
+        grid-template-columns: 1fr;
+      }
+
+      .recruitment-header h1 {
+        font-size: var(--font-size-2xl);
+      }
+
+      .recruitment-form {
+        animation: fadeInUp 0.8s ease-out;
+      }
+    }
+    /* Ensure navbar logo size and hover match homepage */
+    .navbar-logo .logo-img { height: 60px; width: auto; transition: all 0.25s ease; }
+    .navbar-logo:hover .logo-img { height: 70px; filter: drop-shadow(0 4px 8px rgba(255,107,53,0.4)); }
+  </style>
+</head>
+
+<body>
+  <!-- Custom Cursor -->
+  <div class="cursor">
+    <div class="cursor-arrow"></div>
+  </div>
+  <div class="cursor-dot"></div>
+
+  <div class="recruitment-page">
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+      <div class="navbar-container">
+        <a href="index.html" class="navbar-logo" title="Back to Home">
+          <img src="assets/cc.svg" alt="CodeChef Logo" class="logo-img" loading="lazy">
+          <span class="logo-text">Projects</span>
+        </a>
+
+        <div class="nav-controls">
+          <button class="theme-toggle" id="themeToggle" title="Toggle Dark/Light Mode" aria-label="Theme Toggle">
+            <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <circle cx="12" cy="12" r="5"></circle>
+              <line x1="12" y1="1" x2="12" y2="3"></line>
+              <line x1="12" y1="21" x2="12" y2="23"></line>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+              <line x1="1" y1="12" x2="3" y2="12"></line>
+              <line x1="21" y1="12" x2="23" y2="12"></line>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+            <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+          </button>
+          <a href="index.html" class="btn btn-secondary">← Back Home</a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Content -->
+    <div class="recruitment-wrapper">
+      <a href="index.html" class="back-link">
+        <span>←</span> Back to Homepage
+      </a>
+
+      <div class="recruitment-header">
+        <h1>Join Our Team</h1>
+        <p>
+          Be part of a passionate community building innovative solutions, 
+          conducting research, and pushing the boundaries of technology
+        </p>
+      </div>
+
+      <div class="recruitment-container">
+        <div class="recruitment-info">
+          <h2>Why Join Us?</h2>
+          <p>
+            CodeChef Projects Department is a hub for innovation and collaboration. 
+            We work on cutting-edge projects, explore emerging technologies, and create 
+            impactful solutions that matter.
+          </p>
+
+          <h3 style="margin-top: var(--spacing-2xl); margin-bottom: var(--spacing-lg); color: var(--text-primary);">
+            We're Looking For:
+          </h3>
+          <ul class="requirements-list">
+            <li>Strong problem-solving and coding skills</li>
+            <li>Passion for learning new technologies</li>
+            <li>Collaborative team player mindset</li>
+            <li>Commitment to code quality and best practices</li>
+            <li>Initiative to take on challenging projects</li>
+            <li>Good communication and documentation skills</li>
+          </ul>
+
+          <h3 style="margin-top: var(--spacing-2xl); margin-bottom: var(--spacing-lg); color: var(--text-primary);">
+            Available Roles:
+          </h3>
+          <ul class="requirements-list">
+            <li>Frontend Developer</li>
+            <li>Backend Developer</li>
+            <li>Full Stack Developer</li>
+            <li>Game Developer</li>
+            <li>Researcher</li>
+            <li>UI/UX Designer</li>
+          </ul>
+        </div>
+
+        <form class="recruitment-form" id="recruitmentForm">
+          <div class="form-group">
+            <label for="name">Full Name *</label>
+            <input type="text" id="name" name="name" placeholder="John Doe" required>
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email *</label>
+            <input type="email" id="email" name="email" placeholder="your@email.com" required>
+          </div>
+
+          <div class="form-group">
+            <label for="phone">Phone Number</label>
+            <input type="tel" id="phone" name="phone" placeholder="+91 98765 43210">
+          </div>
+
+          <div class="form-group">
+            <label for="semester">Semester *</label>
+            <select id="semester" name="semester" required>
+              <option value="">-- Select Semester --</option>
+              <option value="1">1st Semester</option>
+              <option value="2">2nd Semester</option>
+              <option value="3">3rd Semester</option>
+              <option value="4">4th Semester</option>
+              <option value="5">5th Semester</option>
+              <option value="6">6th Semester</option>
+              <option value="7">7th Semester</option>
+              <option value="8">8th Semester</option>
+              <option value="9">9th Semester</option>
+              <option value="10">10th Semester</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="role">Preferred Role *</label>
+            <select id="role" name="role" required>
+              <option value="">-- Select Role --</option>
+              <option value="frontend">Frontend Developer</option>
+              <option value="backend">Backend Developer</option>
+              <option value="fullstack">Full Stack Developer</option>
+              <option value="gamedev">Game Developer</option>
+              <option value="research">Researcher</option>
+              <option value="designer">UI/UX Designer</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="skills">Key Skills (comma separated) *</label>
+            <input type="text" id="skills" name="skills" placeholder="React, Node.js, Python..." required>
+          </div>
+
+          <div class="form-group">
+            <label for="experience">Why should we select you? *</label>
+            <textarea id="experience" name="experience" placeholder="Tell us about your experience, projects, and why you want to join..." required></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="portfolio">Portfolio / GitHub URL *</label>
+            <input type="url" id="portfolio" name="portfolio" placeholder="https://github.com/yourprofile" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="linkedin">LinkedIn URL *</label>
+            <input type="url" id="linkedin" name="linkedin" placeholder="https://www.linkedin.com/in/yourprofile" required>
+          </div>
+
+          <div class="form-group">
+            <input type="submit" value="Submit Application">
+          </div>
+        </form>
+          <div id="bookingContainer" style="margin-top:1rem;"></div>
+      </div>
+
+      <div class="note-box">
+        <strong>📌 Important:</strong> All applications will be reviewed carefully. 
+        Selected candidates will be notified within 5-7 business days for the interview round.
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/animations.js"></script>
+  <script>
+    // Theme Management for Recruitment Page
+    class ThemeManager {
+      constructor() {
+        this.themeToggle = document.getElementById('themeToggle');
+        this.init();
+      }
+
+      init() {
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        this.setTheme(savedTheme);
+        this.themeToggle.addEventListener('click', () => this.toggleTheme());
+      }
+
+      setTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
+      }
+
+      toggleTheme() {
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+        const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+        this.setTheme(newTheme);
+      }
+    }
+
+    // Form Handling
+    document.addEventListener('DOMContentLoaded', () => {
+      new ThemeManager();
+
+      const recruitmentForm = document.getElementById('recruitmentForm');
+      if (recruitmentForm) {
+        recruitmentForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const formData = new FormData(recruitmentForm);
+          const data = Object.fromEntries(formData);
+
+          console.log('Application submitted:', data);
+
+          // Show success message
+          const successMsg = document.createElement('div');
+          successMsg.style.cssText = `
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            background: #10b981;
+            color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 10000;
+            animation: slideInDown 0.4s ease-out;
+          `;
+          successMsg.textContent = 'Application submitted successfully! We will contact you soon.';
+          document.body.appendChild(successMsg);
+          
+          // Store in localStorage
+          let applications = JSON.parse(localStorage.getItem('applications')) || [];
+          applications.push({
+            ...data,
+            timestamp: new Date().toISOString()
+          });
+          localStorage.setItem('applications', JSON.stringify(applications));
+          
+          recruitmentForm.reset();
+          // If interview slots are available, show booking UI for applicant
+          setTimeout(() => {
+            successMsg.style.animation = 'slideInUp 0.4s ease-out forwards';
+            setTimeout(() => successMsg.remove(), 400);
+          }, 1500);
+
+          const interviewSlots = JSON.parse(localStorage.getItem('interviewSlots')) || [];
+          if (interviewSlots.length > 0) {
+            showInterviewBooking(data.email, interviewSlots);
+          }
+        });
+      }
+    });
+
+    function showInterviewBooking(email, slots) {
+      const container = document.getElementById('bookingContainer');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const wrapper = document.createElement('div');
+      wrapper.style.cssText = 'background: var(--bg-tertiary); padding: 1rem; border-radius: 10px; border:1px solid var(--border-color);';
+      wrapper.innerHTML = `
+        <h3 style="margin-top:0; color: var(--text-primary);">Book Interview Slot</h3>
+        <p style="color: var(--text-secondary); margin:0 0 0.75rem 0;">Select a date and time for your interview from available slots.</p>
+        <div id="availableSlots" style="display:flex; flex-direction:column; gap:0.5rem; max-height:220px; overflow:auto;"></div>
+        <div style="margin-top:0.75rem; display:flex; gap:0.5rem;">
+          <button class="btn btn-primary" id="confirmBooking">Confirm Booking</button>
+          <button class="btn btn-secondary" id="cancelBooking">Cancel</button>
+        </div>
+        <div id="bookingMsg" style="margin-top:0.5rem; color: var(--text-secondary);"></div>
+      `;
+
+      container.appendChild(wrapper);
+
+      const list = wrapper.querySelector('#availableSlots');
+      const bookings = JSON.parse(localStorage.getItem('bookings')) || [];
+      slots.forEach((s, idx) => {
+        const taken = bookings.find(b => b.date === s.date && b.time === s.time);
+        const el = document.createElement('label');
+        el.style.cssText = 'display:flex; gap:0.5rem; align-items:center; padding:0.4rem; border-radius:6px; border:1px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary); justify-content: space-between;';
+        const left = document.createElement('div');
+        left.style.cssText = 'display:flex; gap:0.5rem; align-items:center; flex:1;';
+        const radio = document.createElement('input');
+        radio.type = 'radio';
+        radio.name = 'slotSel';
+        radio.value = `${s.date}|${s.time}`;
+        radio.style.width = 'auto';
+        if (taken) radio.disabled = true;
+        left.appendChild(radio);
+        const text = document.createElement('div');
+        text.style.flex = '1';
+        text.textContent = `${s.date} @ ${s.time}`;
+        left.appendChild(text);
+        el.appendChild(left);
+
+        const right = document.createElement('div');
+        right.style.cssText = 'min-width:120px; text-align:right; color: var(--text-secondary);';
+        right.textContent = taken ? `Taken` : `Available`;
+        el.appendChild(right);
+
+        list.appendChild(el);
+      });
+
+      wrapper.querySelector('#cancelBooking').addEventListener('click', () => { container.innerHTML = ''; });
+
+      wrapper.querySelector('#confirmBooking').addEventListener('click', () => {
+        const sel = wrapper.querySelector('input[name="slotSel"]:checked');
+        const bookingMsg = wrapper.querySelector('#bookingMsg');
+        if (!sel) {
+          bookingMsg.textContent = 'Please select a slot.';
+          return;
+        }
+        const [date, time] = sel.value.split('|');
+        // Save booking
+        const bookings = JSON.parse(localStorage.getItem('bookings')) || [];
+        // prevent double booking for same slot
+        if (bookings.find(b => b.email === email && b.date === date && b.time === time)) {
+          bookingMsg.textContent = 'You already booked this slot.';
+          return;
+        }
+        bookings.push({ email, date, time, bookedAt: new Date().toISOString() });
+        localStorage.setItem('bookings', JSON.stringify(bookings));
+        bookingMsg.style.color = 'var(--accent-success)';
+        bookingMsg.textContent = `Booked: ${date} @ ${time}`;
+        setTimeout(() => { container.innerHTML = ''; }, 1500);
+      });
+    }
+  </script>
+  <script src="js/cursor.js"></script>
+</body>
+</html>
