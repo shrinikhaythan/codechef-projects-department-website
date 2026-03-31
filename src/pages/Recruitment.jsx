@@ -39,65 +39,111 @@ const Recruitment = () => {
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
+    const handleSubmit = async (e) => {
+    e.preventDefault();
 
-        // Store in localStorage
-        let applications = JSON.parse(localStorage.getItem('applications')) || [];
-        applications.push({
-            ...formData,
-            timestamp: new Date().toISOString()
+    try {
+        const res = await fetch("http://localhost:5000/api/applications", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(formData)
         });
-        localStorage.setItem('applications', JSON.stringify(applications));
+
+        if (!res.ok) {
+            alert("Error submitting application");
+            return;
+        }
 
         setSubmitted(true);
 
-        // Show success toast
-        const successMsg = document.createElement('div');
-        successMsg.style.cssText = `
-            position: fixed; top: 100px; right: 20px; padding: 1rem 1.5rem;
-            background: #10b981; color: white; border-radius: 0.5rem;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); z-index: 10000;
-            animation: slideInDown 0.4s ease-out;
-        `;
-        successMsg.textContent = 'Application submitted successfully! We will contact you soon.';
-        document.body.appendChild(successMsg);
-        setTimeout(() => {
-            successMsg.style.animation = 'slideInUp 0.4s ease-out forwards';
-            setTimeout(() => successMsg.remove(), 400);
-        }, 1500);
+        alert("Application submitted successfully!");
 
-        // If interview slots are available, show booking UI
-        const interviewSlots = JSON.parse(localStorage.getItem('interviewSlots')) || [];
-        if (interviewSlots.length > 0) {
-            setShowBooking(true);
-        }
-    };
+        setFormData({
+            name: '',
+            email: '',
+            phone: '',
+            semester: '',
+            role: '',
+            skills: '',
+            experience: '',
+            portfolio: '',
+            linkedin: ''
+        });
 
-    const handleConfirmBooking = () => {
-        if (!selectedSlot) {
-            setBookingMsg('Please select a slot.');
-            return;
-        }
-        const [date, time] = selectedSlot.split('|');
-        const bookings = JSON.parse(localStorage.getItem('bookings')) || [];
-        if (bookings.find(b => b.email === formData.email && b.date === date && b.time === time)) {
+    } catch (err) {
+        console.error(err);
+        alert("Server error");
+    }
+};
+
+    const handleConfirmBooking = async () => {
+    if (!selectedSlot) {
+        setBookingMsg('Please select a slot.');
+        return;
+    }
+
+    const [date, time] = selectedSlot.split('|');
+
+    try {
+        // fetch existing bookings
+        const res = await fetch("http://localhost:5000/api/bookings");
+        const existing = await res.json();
+
+        if (existing.find(b => b.email === formData.email && b.date === date && b.time === time)) {
             setBookingMsg('You already booked this slot.');
             return;
         }
-        bookings.push({ email: formData.email, date, time, bookedAt: new Date().toISOString() });
-        localStorage.setItem('bookings', JSON.stringify(bookings));
+
+        // create booking
+        await fetch("http://localhost:5000/api/bookings", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                email: formData.email,
+                date,
+                time
+            })
+        });
+
         setBookingMsg(`Booked: ${date} @ ${time}`);
+
         setTimeout(() => {
-            // Reset for potentially another response or just stay there
             setSubmitted(true);
         }, 1500);
-    };
 
-    // Render Booking UI
+    } catch (err) {
+        console.error(err);
+        setBookingMsg("Server error");
+    }
+};
+
+    const [slots, setSlots] = useState([]);
+    const [bookings, setBookings] = useState([]);
+    const fetchSlots = async () => {
+    const res = await fetch("http://localhost:5000/api/slots");
+    const data = await res.json();
+    setSlots(data);
+};
+
+const fetchBookings = async () => {
+    const res = await fetch("http://localhost:5000/api/bookings");
+    const data = await res.json();
+    setBookings(data);
+};
+
+useEffect(() => {
+    if (showBooking) {
+        fetchSlots();
+        fetchBookings();
+    }
+}, [showBooking]);
     const renderBookingUI = () => {
-        const interviewSlots = JSON.parse(localStorage.getItem('interviewSlots')) || [];
-        const bookings = JSON.parse(localStorage.getItem('bookings')) || [];
+        const interviewSlots = slots;
+        const bookingsData = bookings;
 
         return (
             <div style={{ background: 'var(--bg-tertiary)', padding: '1.5rem', borderRadius: '10px', border: '1px solid var(--border-color)', marginTop: '2rem' }}>
@@ -105,7 +151,7 @@ const Recruitment = () => {
                 <p style={{ color: 'var(--text-secondary)', margin: '0 0 0.75rem 0' }}>Select a date and time for your interview from available slots.</p>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', maxHeight: '220px', overflowY: 'auto' }}>
                     {interviewSlots.map((s, idx) => {
-                        const taken = bookings.find(b => b.date === s.date && b.time === s.time);
+                        const taken = bookingsData.find(b => b.date === s.date && b.time === s.time);
                         return (
                             <label key={idx} style={{
                                 display: 'flex', gap: '0.5rem', alignItems: 'center', padding: '0.4rem',

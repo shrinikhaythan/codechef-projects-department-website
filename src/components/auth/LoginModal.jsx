@@ -9,34 +9,42 @@ const LoginModal = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState('');
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        setError('');
+    const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
 
-        // Check admin first
-        const admins = getAdmins();
-        const admin = admins.find(a => a.email === email && a.password === password);
+    try {
+        const res = await fetch("http://localhost:5000/api/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                email,
+                password
+            })
+        });
 
-        if (admin) {
-            login({ ...admin, role: 'admin' });
-            closeLogin();
+        const data = await res.json();
+
+        if (!res.ok) {
+            setError(data.error || "Login failed");
             return;
         }
 
-        // Check user
-        const users = JSON.parse(localStorage.getItem('users')) || [];
-        const userMatch = users.find(u => u.email === email);
-        if (userMatch) {
-            if (userMatch.password === btoa(password)) {
-                login({ ...userMatch, role: 'user' });
-                closeLogin();
-            } else {
-                setError('Invalid email or password');
-            }
-        } else {
-            setError('Invalid email or password');
-        }
-    };
+        // Save token (optional but good practice)
+        localStorage.setItem("token", data.token);
+
+        // Optional: store user info
+        login({ email, role: "user" });
+
+        closeLogin();
+
+    } catch (err) {
+        console.error(err);
+        setError("Server error. Try again.");
+    }
+};
 
     if (!isLoginOpen) return null;
 

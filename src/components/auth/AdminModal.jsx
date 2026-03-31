@@ -66,12 +66,18 @@ const AdminModal = ({ isOpen, onClose }) => {
     const [contentMsg, setContentMsg] = useState('');
 
     useEffect(() => {
-        // Load content from localStorage on mount
-        const savedContent = JSON.parse(localStorage.getItem('contentData')) || {};
-        if (savedContent.heroTitle) {
-            setContentForm(prev => ({ ...prev, ...savedContent }));
-        }
-    }, [isOpen]);
+    const savedContent = JSON.parse(localStorage.getItem('contentData')) || {};
+    if (savedContent.heroTitle) {
+        setContentForm(prev => ({ ...prev, ...savedContent }));
+    }
+
+    if (isOpen) {
+        fetchMembers();
+        fetchSlots();
+        fetchApplications();
+    }
+
+}, [isOpen]);
 
     if (!isOpen) return null;
 
@@ -112,61 +118,68 @@ const AdminModal = ({ isOpen, onClose }) => {
         setAdminPwStrength(score);
     };
 
-    const handleChangePassword = (e) => {
-        e.preventDefault();
-        if (newPassword !== confirmPassword) { setSettingsMsg('Passwords do not match'); return; }
-        if (passwordStrength < 3) { setSettingsMsg('Password is too weak'); return; }
-        const admins = JSON.parse(localStorage.getItem('adminAccounts')) || [];
-        const idx = admins.findIndex(a => a.email === user?.email);
-        if (idx === -1) { setSettingsMsg('Admin not found'); return; }
-        if (admins[idx].password !== currentPassword) { setSettingsMsg('Current password is wrong'); return; }
-        admins[idx].password = newPassword;
-        localStorage.setItem('adminAccounts', JSON.stringify(admins));
-        setSettingsMsg('✓ Password changed successfully');
-        setCurrentPassword(''); setNewPassword(''); setConfirmPassword('');
-        setPasswordStrength(0);
-    };
+const handleChangePassword = async (e) => {
+  e.preventDefault();
 
-    const handleAddSlot = () => {
-        if (!slotDate || !slotTime) { setSlotsMsg('Both date and time are required'); return; }
-        const interviewSlots = JSON.parse(localStorage.getItem('interviewSlots')) || [];
-        if (interviewSlots.find(s => s.date === slotDate && s.time === slotTime)) {
-            setSlotsMsg('This slot already exists'); return;
-        }
-        interviewSlots.push({ date: slotDate, time: slotTime });
-        localStorage.setItem('interviewSlots', JSON.stringify(interviewSlots));
-        setSlotsMsg(`✓ Slot added: ${slotDate} @ ${slotTime}`);
-        setSlotDate(''); setSlotTime('');
-        forceUpdate();
-    };
+  const res = await fetch("http://localhost:5000/api/change-password", {
+    method: "PUT",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({
+      email: user.email,
+      currentPassword,
+      newPassword
+    })
+  });
 
-    const handleRemoveSlot = (date, time) => {
-        let interviewSlots = JSON.parse(localStorage.getItem('interviewSlots')) || [];
-        interviewSlots = interviewSlots.filter(s => !(s.date === date && s.time === time));
-        localStorage.setItem('interviewSlots', JSON.stringify(interviewSlots));
-        setSlotsMsg('Slot removed');
-        forceUpdate();
-    };
+  const data = await res.json();
+  setSettingsMsg(data.msg || data.error);
+};
 
-    const handleAcceptApp = (app, index) => {
-        if (window.confirm(`Accept ${app.name} as a member?`)) {
-            const currentApps = JSON.parse(localStorage.getItem('applications')) || [];
-            const newApps = currentApps.filter(a => a.timestamp !== app.timestamp);
-            localStorage.setItem('applications', JSON.stringify(newApps));
-            alert(`✓ ${app.name} has been accepted! Email notification sent.`);
-            forceUpdate();
-        }
-    };
+const [slots, setSlots] = useState([]);
 
-    const handleRejectApp = (app) => {
-        if (window.confirm(`Reject application for ${app.name}?`)) {
-            const currentApps = JSON.parse(localStorage.getItem('applications')) || [];
-            const newApps = currentApps.filter(a => a.timestamp !== app.timestamp);
-            localStorage.setItem('applications', JSON.stringify(newApps));
-            alert(`Application rejected.`);
-            forceUpdate();
-        }
-    };
+const fetchSlots = async () => {
+  const res = await fetch("http://localhost:5000/api/slots");
+  setSlots(await res.json());
+};
+
+const handleAddSlot = async () => {
+  await fetch("http://localhost:5000/api/slots", {
+    method: "POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({ date: slotDate, time: slotTime })
+  });
+
+  fetchSlots();
+};
+
+const handleRemoveSlot = async (id) => {
+  await fetch(`http://localhost:5000/api/slots/${id}`, {
+    method: "DELETE"
+  });
+
+  fetchSlots();
+};
+
+    const [applications, setApplications] = useState([]);
+
+const fetchApplications = async () => {
+  const res = await fetch("http://localhost:5000/api/applications");
+  setApplications(await res.json());
+};
+
+const handleAcceptApp = async (id) => {
+  await fetch(`http://localhost:5000/api/applications/${id}`, {
+    method: "DELETE"
+  });
+  fetchApplications();
+};
+
+const handleRejectApp = async (id) => {
+  await fetch(`http://localhost:5000/api/applications/${id}`, {
+    method: "DELETE"
+  });
+  fetchApplications();
+};
 
     const handleAddAdmin = (e) => {
         e.preventDefault();
@@ -185,35 +198,31 @@ const AdminModal = ({ isOpen, onClose }) => {
     };
 
     // --- NEW: Handle Members ---
-    const handleAddMember = (e) => {
-        e.preventDefault();
-        const member = {
-            id: Date.now(),
-            ...memberForm,
-            photo: memberForm.photo || 'https://via.placeholder.com/140/FF6B35/ffffff?text=' + memberForm.name.charAt(0)
-        };
-        let members = JSON.parse(localStorage.getItem('appMembers')) || {};
-        if (!members[member.tenure]) members[member.tenure] = {};
-        if (!members[member.tenure][member.group]) members[member.tenure][member.group] = [];
-        members[member.tenure][member.group].push(member);
-        localStorage.setItem('appMembers', JSON.stringify(members));
-        setMembersMsg(`✓ ${member.name} added successfully!`);
-        setMemberForm({ name: '', email: '', role: '', group: 'Core Team', tenure: '2023-2024', linkedin: '', github: '', photo: '' });
-        forceUpdate();
-    };
+    const [members, setMembers] = useState([]);
 
-    const handleDeleteMember = (id, tenure, group) => {
-        if (!window.confirm('Are you sure you want to remove this member?')) return;
-        let members = JSON.parse(localStorage.getItem('appMembers')) || {};
-        if (members[tenure] && members[tenure][group]) {
-            members[tenure][group] = members[tenure][group].filter(m => m.id !== id);
-            if (members[tenure][group].length === 0) delete members[tenure][group];
-            if (Object.keys(members[tenure]).length === 0) delete members[tenure];
-        }
-        localStorage.setItem('appMembers', JSON.stringify(members));
-        setMembersMsg('✓ Member removed');
-        forceUpdate();
-    };
+const fetchMembers = async () => {
+  const res = await fetch("http://localhost:5000/api/members");
+  setMembers(await res.json());
+};
+
+const handleAddMember = async (e) => {
+  e.preventDefault();
+
+  await fetch("http://localhost:5000/api/members", {
+    method: "POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify(memberForm)
+  });
+
+  fetchMembers();
+};
+
+const handleDeleteMember = async (id) => {
+  await fetch(`http://localhost:5000/api/members/${id}`, {
+    method: "DELETE"
+  });
+  fetchMembers();
+};
 
     // --- NEW: Handle Projects ---
     const handleAddProject = (e) => {
@@ -294,10 +303,10 @@ const AdminModal = ({ isOpen, onClose }) => {
         </div>
     );
 
-    // Get data from localStorage
-    const interviewSlots = JSON.parse(localStorage.getItem('interviewSlots')) || [];
+  
+    
     const currentAdmins = JSON.parse(localStorage.getItem('adminAccounts')) || [];
-    const applications = JSON.parse(localStorage.getItem('applications')) || [];
+    
     const bookedInterviews = JSON.parse(localStorage.getItem('bookings')) || [];
     const appMembers = JSON.parse(localStorage.getItem('appMembers')) || {};
     const appProjects = JSON.parse(localStorage.getItem('appProjects')) || [];

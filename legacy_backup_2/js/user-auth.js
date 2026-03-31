@@ -157,86 +157,81 @@ class UserAuth {
     });
   }
 
-  handleUserLogin(e) {
-    e.preventDefault();
+  async handleUserLogin(e) {
+  e.preventDefault();
 
-    const email = document.getElementById('userEmail').value;
-    const password = document.getElementById('userPassword').value;
+  const email = document.getElementById('userEmail').value;
+  const password = document.getElementById('userPassword').value;
 
-    const users = JSON.parse(localStorage.getItem('users')) || [];
+  try {
+    const res = await fetch("http://localhost:5000/api/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ email, password })
+    });
 
-    const user = users.find(
-      (u) => u.email === email && this.verifyPassword(password, u.password)
-    );
+    const data = await res.json();
 
-    if (user) {
-      this.currentUser = {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        role: 'user',
-        loginTime: new Date()
-      };
-
-      localStorage.setItem('currentUser', JSON.stringify(this.currentUser));
-      this.showNotification(`✓ Welcome back, ${user.name}!`, 'success');
-      this.userLoginForm.reset();
-      this.closeUserLogin();
-      this.updateUserUI();
-
-    } else {
-      this.showNotification('✗ Invalid email or password.', 'error');
-    }
-  }
-
-  handleUserSignup(e) {
-    e.preventDefault();
-
-    const name = document.getElementById('signupName').value;
-    const email = document.getElementById('signupEmail').value;
-    const password = document.getElementById('signupPassword').value;
-    const confirmPassword = document.getElementById('confirmPassword').value;
-
-    // Validate password match
-    if (!PasswordValidator.passwordsMatch(password, confirmPassword)) {
-      this.showNotification('✗ Passwords do not match.', 'error');
+    if (!res.ok) {
+      this.showNotification(data.error, 'error');
       return;
     }
 
-    // Validate password strength (must be strong)
-    const validation = PasswordValidator.validatePassword(password);
-    if (!validation.isValid) {
-      this.showNotification('✗ Password does not meet security requirements.', 'error');
-      return;
-    }
-
-    let users = JSON.parse(localStorage.getItem('users')) || [];
-
-    if (users.find(u => u.email === email)) {
-      this.showNotification('✗ Email already registered.', 'error');
-      return;
-    }
-
-    const newUser = {
-      id: Date.now(),
-      name: name,
-      email: email,
-      password: this.hashPassword(password),
-      registrationDate: new Date(),
-      role: 'user'
+    this.currentUser = {
+      name: data.user.name,
+      email: data.user.email,
+      role: data.user.role
     };
 
-    users.push(newUser);
-    localStorage.setItem('users', JSON.stringify(users));
+    // still store session locally (this is OK)
+    localStorage.setItem('currentUser', JSON.stringify(this.currentUser));
 
-    this.showNotification('✓ Account created successfully! You can now login.', 'success');
+    this.showNotification(`✓ Welcome back, ${data.user.name}!`, 'success');
+    this.userLoginForm.reset();
+    this.closeUserLogin();
+    this.updateUserUI();
+
+  } catch (err) {
+    this.showNotification('Server error', 'error');
+  }
+}
+
+  async handleUserSignup(e) {
+  e.preventDefault();
+
+  const name = document.getElementById('signupName').value;
+  const email = document.getElementById('signupEmail').value;
+  const password = document.getElementById('signupPassword').value;
+
+  try {
+    const res = await fetch("http://localhost:5000/api/signup", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ name, email, password })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      this.showNotification(data.error, 'error');
+      return;
+    }
+
+    this.showNotification('✓ Account created successfully!', 'success');
     this.userSignupForm.reset();
-    this.clearPasswordStrengthUI();
-    
+
     setTimeout(() => {
       this.switchToLogin();
     }, 1000);
+
+  } catch (err) {
+    this.showNotification('Server error', 'error');
   }
+}
 
   checkUserLoginStatus() {
     const user = localStorage.getItem('currentUser');
@@ -337,7 +332,7 @@ class UserAuth {
     e.preventDefault();
     
     const email = document.getElementById('forgotEmail').value;
-    const users = JSON.parse(localStorage.getItem('users')) || [];
+    
     const user = users.find(u => u.email === email);
 
     if (!user) {

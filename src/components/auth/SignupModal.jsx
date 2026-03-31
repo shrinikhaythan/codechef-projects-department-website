@@ -51,37 +51,40 @@ const SignupModal = () => {
         }
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        setError('');
+    const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
 
-        if (password !== confirmPassword) {
-            setError('Passwords do not match');
-            return;
-        }
-
-        if (strength.strength === 'weak') {
-            setError('Password is too weak');
-            return;
-        }
-
-        try {
-            const newUser = {
-                id: Date.now(),
+    try {
+        const res = await fetch("http://localhost:5000/api/register", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
                 name,
                 email,
-                password: btoa(password),
-                registrationDate: new Date(),
-                role: 'user'
-            };
+                password
+            })
+        });
 
-            registerUser(newUser);
-            openLogin();
-            alert('Account created! Please login.');
-        } catch (err) {
-            setError(err.message);
+        const data = await res.json();
+
+        if (!res.ok) {
+            setError(data.error || "Signup failed");
+            return;
         }
-    };
+
+        alert("Signup successful! Please login.");
+
+        closeSignup();
+        openLogin();
+
+    } catch (err) {
+        console.error(err);
+        setError("Server error. Try again.");
+    }
+};
 
     if (!isSignupOpen) return null;
 

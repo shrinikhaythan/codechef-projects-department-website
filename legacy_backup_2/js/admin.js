@@ -130,27 +130,39 @@ class AdminPanel {
   }
 
   // Interview slot management
-  loadInterviewSlots() {
-    const slots = JSON.parse(localStorage.getItem('interviewSlots')) || [];
+  async loadInterviewSlots() {
+  try {
+    const res = await fetch("http://localhost:5000/api/slots");
+    const slots = await res.json();
+
     this.renderInterviewSlots(slots);
 
-    // Attach add slot button
+    // Attach add slot button (UNCHANGED)
     const addBtn = document.getElementById('addInterviewSlotBtn');
     if (addBtn) {
       addBtn.onclick = (e) => {
         e.preventDefault();
+
         const dateInput = document.getElementById('slotDate');
         const timeInput = document.getElementById('slotTime');
+
         if (!dateInput.value || !timeInput.value) {
           this.showNotification('Please pick both date and time.', 'error');
           return;
         }
+
         this.addInterviewSlot(dateInput.value, timeInput.value);
+
         dateInput.value = '';
         timeInput.value = '';
       };
     }
+
+  } catch (err) {
+    console.error(err);
+    this.showNotification('Failed to load slots.', 'error');
   }
+}
 
   renderInterviewSlots(slots) {
     const container = document.getElementById('slotsList');
@@ -172,29 +184,56 @@ class AdminPanel {
     container.innerHTML = html;
   }
 
-  addInterviewSlot(date, time) {
-    const slots = JSON.parse(localStorage.getItem('interviewSlots')) || [];
+  async addInterviewSlot(date, time) {
+  try {
+    // fetch existing slots
+    const res = await fetch("http://localhost:5000/api/slots");
+    const slots = await res.json();
+
     // avoid duplicates
     if (slots.find(s => s.date === date && s.time === time)) {
       this.showNotification('This slot already exists.', 'info');
       return;
     }
-    slots.push({ date, time });
-    slots.sort((a,b) => (a.date + a.time).localeCompare(b.date + b.time));
-    localStorage.setItem('interviewSlots', JSON.stringify(slots));
-    this.showNotification('✓ Interview slot added.', 'success');
-    this.renderInterviewSlots(slots);
-  }
 
-  removeInterviewSlot(index) {
-    const slots = JSON.parse(localStorage.getItem('interviewSlots')) || [];
-    if (index < 0 || index >= slots.length) return;
-    if (!confirm('Remove this interview slot?')) return;
-    slots.splice(index, 1);
-    localStorage.setItem('interviewSlots', JSON.stringify(slots));
-    this.showNotification('Slot removed.', 'info');
-    this.renderInterviewSlots(slots);
+    // create new slot
+    await fetch("http://localhost:5000/api/slots", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ date, time })
+    });
+
+    this.showNotification('✓ Interview slot added.', 'success');
+
+    // refresh UI
+    this.loadInterviewSlots();
+
+  } catch (err) {
+    console.error(err);
+    this.showNotification('Server error', 'error');
   }
+}
+
+  async removeInterviewSlot(id) {
+  if (!confirm('Remove this interview slot?')) return;
+
+  try {
+    await fetch(`http://localhost:5000/api/slots/${id}`, {
+      method: "DELETE"
+    });
+
+    this.showNotification('Slot removed.', 'info');
+
+    // refresh UI
+    this.loadInterviewSlots();
+
+  } catch (err) {
+    console.error(err);
+    this.showNotification('Server error', 'error');
+  }
+}
 
   // Admin Account Management Methods
   handleAddAdmin(e) {
